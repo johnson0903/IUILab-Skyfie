@@ -1,0 +1,667 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C2914A904FA1B0E5F834A0F /* libPods-Skyfie_on_Spark.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 113C73D46D789956910465BA /* libPods-Skyfie_on_Spark.a */; };
+		2C21B9B11F624CB10078C57C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C21B9B01F624CB10078C57C /* MapKit.framework */; };
+		2C21B9B51F626D880078C57C /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C21B9B31F626D880078C57C /* Places.plist */; };
+		2C21B9B61F626D880078C57C /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C21B9B41F626D880078C57C /* Places.swift */; };
+		2C346C231FBF514200FBA75B /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C346C221FBF514200FBA75B /* Enumerations.swift */; };
+		2C346C271FC451E000FBA75B /* FlightInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C346C261FC451E000FBA75B /* FlightInfo.swift */; };
+		2CAA935E1FB206230054154D /* TrackingRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA935D1FB206230054154D /* TrackingRenderView.swift */; };
+		AE24F9741F2725C40071A0E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F9661F2725C30071A0E6 /* AppDelegate.swift */; };
+		AE24F9751F2725C40071A0E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE24F9671F2725C30071A0E6 /* Assets.xcassets */; };
+		AE24F9771F2725C40071A0E6 /* KeyedInterfaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F96A1F2725C30071A0E6 /* KeyedInterfaceViewController.swift */; };
+		AE24F9781F2725C40071A0E6 /* TimelineElementCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F96C1F2725C40071A0E6 /* TimelineElementCollectionViewCell.swift */; };
+		AE24F9791F2725C40071A0E6 /* TimelineMissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F96D1F2725C40071A0E6 /* TimelineMissionViewController.swift */; };
+		AE24F97A1F2725C40071A0E6 /* ProductCommunicationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F96F1F2725C40071A0E6 /* ProductCommunicationManager.swift */; };
+		AE24F97B1F2725C40071A0E6 /* SparkTestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F9701F2725C40071A0E6 /* SparkTestingViewController.swift */; };
+		AE24F97C1F2725C40071A0E6 /* StartupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F9711F2725C40071A0E6 /* StartupViewController.swift */; };
+		AE24F97D1F2725C40071A0E6 /* DJIImageAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F9731F2725C40071A0E6 /* DJIImageAnnotation.swift */; };
+		AE24F9831F27264B0071A0E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE24F97F1F27264B0071A0E6 /* LaunchScreen.storyboard */; };
+		AE24F9841F27264B0071A0E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE24F9811F27264B0071A0E6 /* Main.storyboard */; };
+		AE2D00AC1F35700400BB8736 /* VideoPreviewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE24FA741F2730880071A0E6 /* VideoPreviewer.framework */; };
+		AE2D00AD1F35700400BB8736 /* VideoPreviewer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AE24FA741F2730880071A0E6 /* VideoPreviewer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AE79C87A1F2C797300B9361F /* PhoneControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8741F2C797300B9361F /* PhoneControlViewController.swift */; };
+		AE79C87D1F2C797300B9361F /* FPVView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8771F2C797300B9361F /* FPVView.swift */; };
+		AE79C87E1F2C797300B9361F /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8781F2C797300B9361F /* LogViewController.swift */; };
+		AE79C87F1F2C797300B9361F /* SkyfieController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8791F2C797300B9361F /* SkyfieController.swift */; };
+		AE79C8841F2C797F00B9361F /* CircularLocationTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8811F2C797F00B9361F /* CircularLocationTransform.swift */; };
+		AE79C8851F2C797F00B9361F /* CylinderSpeedBooster.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8821F2C797F00B9361F /* CylinderSpeedBooster.swift */; };
+		AE79C8861F2C797F00B9361F /* SphereSpeedGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8831F2C797F00B9361F /* SphereSpeedGenerator.swift */; };
+		AE79C88A1F2C79D100B9361F /* FlyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8881F2C79D100B9361F /* FlyCommand.swift */; };
+		AE79C88B1F2C79D100B9361F /* MotionAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE79C8891F2C79D100B9361F /* MotionAnalyzer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AE23792A1F323E2700954D15 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 02A543FC1C3C51CB0083C11B;
+			remoteInfo = VideoPreviewer;
+		};
+		AE24FA731F2730880071A0E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 02A543FD1C3C51CB0083C11B;
+			remoteInfo = VideoPreviewer;
+		};
+		AE2D00AE1F35700400BB8736 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 02A543FC1C3C51CB0083C11B;
+			remoteInfo = VideoPreviewer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AE2D00B01F35700400BB8736 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AE2D00AD1F35700400BB8736 /* VideoPreviewer.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		113C73D46D789956910465BA /* libPods-Skyfie_on_Spark.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Skyfie_on_Spark.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C21B9B01F624CB10078C57C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2C21B9B31F626D880078C57C /* Places.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Places.plist; sourceTree = "<group>"; };
+		2C21B9B41F626D880078C57C /* Places.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
+		2C346C221FBF514200FBA75B /* Enumerations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enumerations.swift; sourceTree = "<group>"; };
+		2C346C261FC451E000FBA75B /* FlightInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightInfo.swift; sourceTree = "<group>"; };
+		2CAA935D1FB206230054154D /* TrackingRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingRenderView.swift; sourceTree = "<group>"; };
+		6EE9053503EAE6A87BBCF750 /* Pods-Skyfie_on_Spark.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skyfie_on_Spark.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark.debug.xcconfig"; sourceTree = "<group>"; };
+		A2A48F969E104A1FF9CA3065 /* Pods-Skyfie_on_Spark.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skyfie_on_Spark.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark.release.xcconfig"; sourceTree = "<group>"; };
+		AE24F9501F2724F00071A0E6 /* Skyfie_on_Spark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skyfie_on_Spark.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE24F9661F2725C30071A0E6 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AE24F9671F2725C30071A0E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE24F9681F2725C30071A0E6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE24F96A1F2725C30071A0E6 /* KeyedInterfaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyedInterfaceViewController.swift; sourceTree = "<group>"; };
+		AE24F96C1F2725C40071A0E6 /* TimelineElementCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineElementCollectionViewCell.swift; sourceTree = "<group>"; };
+		AE24F96D1F2725C40071A0E6 /* TimelineMissionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineMissionViewController.swift; sourceTree = "<group>"; };
+		AE24F96F1F2725C40071A0E6 /* ProductCommunicationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCommunicationManager.swift; sourceTree = "<group>"; };
+		AE24F9701F2725C40071A0E6 /* SparkTestingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SparkTestingViewController.swift; sourceTree = "<group>"; };
+		AE24F9711F2725C40071A0E6 /* StartupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupViewController.swift; sourceTree = "<group>"; };
+		AE24F9731F2725C40071A0E6 /* DJIImageAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DJIImageAnnotation.swift; sourceTree = "<group>"; };
+		AE24F9801F27264B0071A0E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AE24F9821F27264B0071A0E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = VideoPreviewer.xcodeproj; path = VideoPreviewer/VideoPreviewer.xcodeproj; sourceTree = "<group>"; };
+		AE79C8741F2C797300B9361F /* PhoneControlViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneControlViewController.swift; sourceTree = "<group>"; };
+		AE79C8771F2C797300B9361F /* FPVView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FPVView.swift; sourceTree = "<group>"; };
+		AE79C8781F2C797300B9361F /* LogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		AE79C8791F2C797300B9361F /* SkyfieController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkyfieController.swift; sourceTree = "<group>"; };
+		AE79C8811F2C797F00B9361F /* CircularLocationTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularLocationTransform.swift; sourceTree = "<group>"; };
+		AE79C8821F2C797F00B9361F /* CylinderSpeedBooster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CylinderSpeedBooster.swift; sourceTree = "<group>"; };
+		AE79C8831F2C797F00B9361F /* SphereSpeedGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SphereSpeedGenerator.swift; sourceTree = "<group>"; };
+		AE79C8881F2C79D100B9361F /* FlyCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlyCommand.swift; sourceTree = "<group>"; };
+		AE79C8891F2C79D100B9361F /* MotionAnalyzer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionAnalyzer.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AE24F94D1F2724F00071A0E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE2D00AC1F35700400BB8736 /* VideoPreviewer.framework in Frameworks */,
+				2C21B9B11F624CB10078C57C /* MapKit.framework in Frameworks */,
+				0C2914A904FA1B0E5F834A0F /* libPods-Skyfie_on_Spark.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		95FE292B0D536BFBE79E3CAC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C21B9B01F624CB10078C57C /* MapKit.framework */,
+				AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */,
+				113C73D46D789956910465BA /* libPods-Skyfie_on_Spark.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AE24F9471F2724F00071A0E6 = {
+			isa = PBXGroup;
+			children = (
+				2C21B9B31F626D880078C57C /* Places.plist */,
+				2C21B9B41F626D880078C57C /* Places.swift */,
+				AE24F9521F2724F00071A0E6 /* Skyfie_on_Spark */,
+				AE24F9511F2724F00071A0E6 /* Products */,
+				B66F8767A1A536233E25C9B2 /* Pods */,
+				95FE292B0D536BFBE79E3CAC /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		AE24F9511F2724F00071A0E6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F9501F2724F00071A0E6 /* Skyfie_on_Spark.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE24F9521F2724F00071A0E6 /* Skyfie_on_Spark */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F9811F27264B0071A0E6 /* Main.storyboard */,
+				AE24F9661F2725C30071A0E6 /* AppDelegate.swift */,
+				AE24F9691F2725C30071A0E6 /* KeyedInterfaces */,
+				AE24F96B1F2725C40071A0E6 /* Missions */,
+				AE24F96E1F2725C40071A0E6 /* Services */,
+				AE24F9701F2725C40071A0E6 /* SparkTestingViewController.swift */,
+				AE24F9711F2725C40071A0E6 /* StartupViewController.swift */,
+				AE79C8731F2C797300B9361F /* SkyfieController */,
+				AE79C8801F2C797F00B9361F /* SkyfieCaculater */,
+				AE79C8871F2C79D100B9361F /* MotionAnalyzer */,
+				AE24F9721F2725C40071A0E6 /* UIObjects */,
+				AE24F97E1F27261E0071A0E6 /* Support */,
+			);
+			path = Skyfie_on_Spark;
+			sourceTree = "<group>";
+		};
+		AE24F9691F2725C30071A0E6 /* KeyedInterfaces */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F96A1F2725C30071A0E6 /* KeyedInterfaceViewController.swift */,
+			);
+			path = KeyedInterfaces;
+			sourceTree = "<group>";
+		};
+		AE24F96B1F2725C40071A0E6 /* Missions */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F96C1F2725C40071A0E6 /* TimelineElementCollectionViewCell.swift */,
+				AE24F96D1F2725C40071A0E6 /* TimelineMissionViewController.swift */,
+			);
+			path = Missions;
+			sourceTree = "<group>";
+		};
+		AE24F96E1F2725C40071A0E6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F96F1F2725C40071A0E6 /* ProductCommunicationManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		AE24F9721F2725C40071A0E6 /* UIObjects */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F9731F2725C40071A0E6 /* DJIImageAnnotation.swift */,
+			);
+			path = UIObjects;
+			sourceTree = "<group>";
+		};
+		AE24F97E1F27261E0071A0E6 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				AE24F97F1F27264B0071A0E6 /* LaunchScreen.storyboard */,
+				AE24F9681F2725C30071A0E6 /* Info.plist */,
+				AE24F9671F2725C30071A0E6 /* Assets.xcassets */,
+			);
+			name = Support;
+			sourceTree = "<group>";
+		};
+		AE24FA701F2730870071A0E6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE24FA741F2730880071A0E6 /* VideoPreviewer.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AE79C8731F2C797300B9361F /* SkyfieController */ = {
+			isa = PBXGroup;
+			children = (
+				AE79C8741F2C797300B9361F /* PhoneControlViewController.swift */,
+				AE79C8771F2C797300B9361F /* FPVView.swift */,
+				AE79C8781F2C797300B9361F /* LogViewController.swift */,
+				AE79C8791F2C797300B9361F /* SkyfieController.swift */,
+				2CAA935D1FB206230054154D /* TrackingRenderView.swift */,
+				2C346C221FBF514200FBA75B /* Enumerations.swift */,
+				2C346C261FC451E000FBA75B /* FlightInfo.swift */,
+			);
+			path = SkyfieController;
+			sourceTree = "<group>";
+		};
+		AE79C8801F2C797F00B9361F /* SkyfieCaculater */ = {
+			isa = PBXGroup;
+			children = (
+				AE79C8811F2C797F00B9361F /* CircularLocationTransform.swift */,
+				AE79C8821F2C797F00B9361F /* CylinderSpeedBooster.swift */,
+				AE79C8831F2C797F00B9361F /* SphereSpeedGenerator.swift */,
+			);
+			path = SkyfieCaculater;
+			sourceTree = "<group>";
+		};
+		AE79C8871F2C79D100B9361F /* MotionAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				AE79C8881F2C79D100B9361F /* FlyCommand.swift */,
+				AE79C8891F2C79D100B9361F /* MotionAnalyzer.swift */,
+			);
+			path = MotionAnalyzer;
+			sourceTree = "<group>";
+		};
+		B66F8767A1A536233E25C9B2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6EE9053503EAE6A87BBCF750 /* Pods-Skyfie_on_Spark.debug.xcconfig */,
+				A2A48F969E104A1FF9CA3065 /* Pods-Skyfie_on_Spark.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AE24F94F1F2724F00071A0E6 /* Skyfie_on_Spark */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE24F9621F2724F00071A0E6 /* Build configuration list for PBXNativeTarget "Skyfie_on_Spark" */;
+			buildPhases = (
+				2E49A987BB0A142A1377D0BA /* [CP] Check Pods Manifest.lock */,
+				AE24F94C1F2724F00071A0E6 /* Sources */,
+				AE24F94D1F2724F00071A0E6 /* Frameworks */,
+				AE24F94E1F2724F00071A0E6 /* Resources */,
+				7793CF1F94A2E314746A7B4E /* [CP] Embed Pods Frameworks */,
+				4685461927E216E543FF04C0 /* [CP] Copy Pods Resources */,
+				AE2D00B01F35700400BB8736 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE23792B1F323E2700954D15 /* PBXTargetDependency */,
+				AE2D00AF1F35700400BB8736 /* PBXTargetDependency */,
+			);
+			name = Skyfie_on_Spark;
+			productName = Skyfie_on_Spark;
+			productReference = AE24F9501F2724F00071A0E6 /* Skyfie_on_Spark.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AE24F9481F2724F00071A0E6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0820;
+				LastUpgradeCheck = 0910;
+				ORGANIZATIONNAME = "康平";
+				TargetAttributes = {
+					AE24F94F1F2724F00071A0E6 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = FLDBWU55HH;
+						LastSwiftMigration = 0910;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = AE24F94B1F2724F00071A0E6 /* Build configuration list for PBXProject "Skyfie_on_Spark" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AE24F9471F2724F00071A0E6;
+			productRefGroup = AE24F9511F2724F00071A0E6 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AE24FA701F2730870071A0E6 /* Products */;
+					ProjectRef = AE24FA6F1F2730870071A0E6 /* VideoPreviewer.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				AE24F94F1F2724F00071A0E6 /* Skyfie_on_Spark */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		AE24FA741F2730880071A0E6 /* VideoPreviewer.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = VideoPreviewer.framework;
+			remoteRef = AE24FA731F2730880071A0E6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE24F94E1F2724F00071A0E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE24F9831F27264B0071A0E6 /* LaunchScreen.storyboard in Resources */,
+				2C21B9B51F626D880078C57C /* Places.plist in Resources */,
+				AE24F9751F2725C40071A0E6 /* Assets.xcassets in Resources */,
+				AE24F9841F27264B0071A0E6 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2E49A987BB0A142A1377D0BA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Skyfie_on_Spark-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4685461927E216E543FF04C0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7793CF1F94A2E314746A7B4E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark-frameworks.sh",
+				"${PODS_ROOT}/DJI-SDK-iOS/iOS_Mobile_SDK/DJISDK.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DJISDK.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AE24F94C1F2724F00071A0E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE24F97D1F2725C40071A0E6 /* DJIImageAnnotation.swift in Sources */,
+				AE79C87D1F2C797300B9361F /* FPVView.swift in Sources */,
+				AE79C87E1F2C797300B9361F /* LogViewController.swift in Sources */,
+				AE79C8861F2C797F00B9361F /* SphereSpeedGenerator.swift in Sources */,
+				AE24F9741F2725C40071A0E6 /* AppDelegate.swift in Sources */,
+				AE24F97C1F2725C40071A0E6 /* StartupViewController.swift in Sources */,
+				2C346C271FC451E000FBA75B /* FlightInfo.swift in Sources */,
+				2C346C231FBF514200FBA75B /* Enumerations.swift in Sources */,
+				AE79C8841F2C797F00B9361F /* CircularLocationTransform.swift in Sources */,
+				AE24F97B1F2725C40071A0E6 /* SparkTestingViewController.swift in Sources */,
+				AE24F9781F2725C40071A0E6 /* TimelineElementCollectionViewCell.swift in Sources */,
+				2C21B9B61F626D880078C57C /* Places.swift in Sources */,
+				2CAA935E1FB206230054154D /* TrackingRenderView.swift in Sources */,
+				AE24F9791F2725C40071A0E6 /* TimelineMissionViewController.swift in Sources */,
+				AE79C88B1F2C79D100B9361F /* MotionAnalyzer.swift in Sources */,
+				AE24F9771F2725C40071A0E6 /* KeyedInterfaceViewController.swift in Sources */,
+				AE79C87A1F2C797300B9361F /* PhoneControlViewController.swift in Sources */,
+				AE79C87F1F2C797300B9361F /* SkyfieController.swift in Sources */,
+				AE79C88A1F2C79D100B9361F /* FlyCommand.swift in Sources */,
+				AE24F97A1F2725C40071A0E6 /* ProductCommunicationManager.swift in Sources */,
+				AE79C8851F2C797F00B9361F /* CylinderSpeedBooster.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AE23792B1F323E2700954D15 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = VideoPreviewer;
+			targetProxy = AE23792A1F323E2700954D15 /* PBXContainerItemProxy */;
+		};
+		AE2D00AF1F35700400BB8736 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = VideoPreviewer;
+			targetProxy = AE2D00AE1F35700400BB8736 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AE24F97F1F27264B0071A0E6 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE24F9801F27264B0071A0E6 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		AE24F9811F27264B0071A0E6 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AE24F9821F27264B0071A0E6 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AE24F9601F2724F00071A0E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AE24F9611F2724F00071A0E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AE24F9631F2724F00071A0E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6EE9053503EAE6A87BBCF750 /* Pods-Skyfie_on_Spark.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = FLDBWU55HH;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/VideoPreviewer",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Skyfie_on_Spark/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "Ping.Skyfie-on-Spark";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		AE24F9641F2724F00071A0E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2A48F969E104A1FF9CA3065 /* Pods-Skyfie_on_Spark.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = FLDBWU55HH;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/VideoPreviewer",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Skyfie_on_Spark/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "Ping.Skyfie-on-Spark";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AE24F94B1F2724F00071A0E6 /* Build configuration list for PBXProject "Skyfie_on_Spark" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE24F9601F2724F00071A0E6 /* Debug */,
+				AE24F9611F2724F00071A0E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AE24F9621F2724F00071A0E6 /* Build configuration list for PBXNativeTarget "Skyfie_on_Spark" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE24F9631F2724F00071A0E6 /* Debug */,
+				AE24F9641F2724F00071A0E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AE24F9481F2724F00071A0E6 /* Project object */;
+}

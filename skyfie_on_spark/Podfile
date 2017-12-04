@@ -1,0 +1,5 @@
+# platform :ios, '10.1'
+
+target 'Skyfie_on_Spark' do
+   pod 'DJI-SDK-iOS'
+end
