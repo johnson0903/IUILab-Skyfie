@@ -10,18 +10,18 @@ import Foundation
 import CoreLocation
 
 class SphereSpeedGenerator{
-    fileprivate var _updateRate: Float = 0.1
-    fileprivate var _radius: Float = 3.0
-    fileprivate var _velocity: Float = 1.0
-    fileprivate var _sphereCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    fileprivate var _accumVerticalAngle: Double = 0.0
-    fileprivate var horizontalTrack: CylinderSpeedBooster?
-    fileprivate var prevTime: Date = Date()
-    fileprivate var velocityAdjust: Date = Date()
-    fileprivate var horizontalChecker: CircularLocationTransform = CircularLocationTransform()
-    fileprivate var isStartMoving: Bool = false
-    fileprivate var isSlowStart: Bool = false
-    fileprivate var speedModifier: Float = 1
+    private var _updateRate: Float = 0.1
+    private var _radius: Float = 3.0
+    private var _velocity: Float = 1.0
+    private var _sphereCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
+    private var _accumVerticalAngle: Double = 0.0
+    private var horizontalTrack: CylinderSpeedBooster?
+    private var prevTime: Date = Date()
+    private var velocityAdjust: Date = Date()
+    private var horizontalChecker: CircularLocationTransform = CircularLocationTransform()
+    private var isStartMoving: Bool = false
+    private var isSlowStart: Bool = false
+    private var speedModifier: Float = 1
     
     var radius: Float {
         get {
@@ -114,7 +114,7 @@ class SphereSpeedGenerator{
             }
         }
     }
-    fileprivate var accumVerticalAngle: Double{
+    private var accumVerticalAngle: Double{
         get {
             return _accumVerticalAngle
         }
@@ -223,7 +223,7 @@ class SphereSpeedGenerator{
                 if accumVerticalAngle < Double.pi/2 {
                     accumVerticalAngle += singleElevationRotate
                 }
-            }else{
+            }else {
                 print("accumAngle: \(radTrans(radVal: accumVerticalAngle))")
                 if accumVerticalAngle <= Double.pi/2 && accumVerticalAngle > 0 {
                     fineResult =  ["down": velocity * Float(cos(singleVelocityTrans)), "backward": velocity * Float(sin(singleVelocityTrans)), "angle": 0]
@@ -239,14 +239,14 @@ class SphereSpeedGenerator{
         return fineResult
     }
     
-    fileprivate func isContinuous()-> Bool {
+    private func isContinuous()-> Bool {
         let currentTime: Date = Date()
         let result = (currentTime.timeIntervalSince(prevTime) < 0.15) ? true : false
         prevTime = currentTime
         return result
     }
     
-    fileprivate func expectHeading(aircraftLocation: CLLocationCoordinate2D)->Double {
+    private func expectHeading(aircraftLocation: CLLocationCoordinate2D)->Double {
         let calPointA: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: aircraftLocation.latitude, longitude: sphereCenter.longitude)
         var realHead: Double = 0
         if aircraftLocation.latitude < sphereCenter.latitude {
@@ -267,7 +267,7 @@ class SphereSpeedGenerator{
         return realHead
     }
     
-    fileprivate func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool {
+    private func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool {
         let aircraftCont: Float = aircraftHeading < 0 ? (aircraftHeading + 360) : aircraftHeading
         var expectCont: Float = toNormalAngle(radTrans(radVal: expectHeading(aircraftLocation: aircraftLocation)))
         expectCont = expectCont < 0 ? (expectCont + 360) : expectCont
@@ -281,7 +281,7 @@ class SphereSpeedGenerator{
         }
     }
     
-    fileprivate func velocityModifier(secondsToNormal: Double) {
+    private func velocityModifier(secondsToNormal: Double) {
         let currentTime: Date = Date()
         let tStep: Double = currentTime.timeIntervalSince(velocityAdjust)
         var modifier = tStep / secondsToNormal
@@ -293,31 +293,31 @@ class SphereSpeedGenerator{
         speedModifier = Float(modifier)
     }
 
-    fileprivate func distantCal(spotA: CLLocationCoordinate2D, spotB: CLLocationCoordinate2D)-> Double{
+    private func distantCal(spotA: CLLocationCoordinate2D, spotB: CLLocationCoordinate2D)-> Double{
         let tempLocationA:CLLocation = CLLocation(latitude: spotA.latitude, longitude: spotA.longitude)
         let tempLocationB: CLLocation = CLLocation(latitude: spotB.latitude, longitude: spotB.longitude)
         return tempLocationA.distance(from: tempLocationB)
     }
     
-    fileprivate func expectElevation(altitude: Float)-> Double{
+    private func expectElevation(altitude: Float)-> Double{
         return asin(Double((altitude - 1.5 ) / self.radius))
     }
     
-    fileprivate func expectElevationByMutiple(aircraftLocation: CLLocationCoordinate2D, altitude: Float)-> Double{
+    private func expectElevationByMutiple(aircraftLocation: CLLocationCoordinate2D, altitude: Float)-> Double{
         let distanceToCenter: Double = distantCal(spotA: aircraftLocation, spotB: sphereCenter)
         
         return (Float(distanceToCenter) < self.radius && altitude > 1.5 + self.radius / 2) ? acos(distantCal(spotA: aircraftLocation, spotB: sphereCenter)/Double(self.radius)) : expectElevation(altitude: altitude)
     }
     
-    fileprivate func radTrans(radVal:Double) -> Float{
+    private func radTrans(radVal:Double) -> Float{
         return Float(radVal * 180 / Double.pi)
     }
     
-    fileprivate func degTrans(degVal:Float) -> Double{
+    private func degTrans(degVal:Float) -> Double{
         return Double(Double(degVal) * Double.pi / 180);
     }
     
-    fileprivate func toNormalAngle(_ angle: Float) -> Float{
+    private func toNormalAngle(_ angle: Float) -> Float{
         var nVal:Float = angle > 0 ? (angle + 180) : (angle - 180)
         if nVal > 180 {
             nVal = nVal - 360 * round(nVal/360)
@@ -326,8 +326,5 @@ class SphereSpeedGenerator{
         }
         return nVal
     }
-
-
-
 }
 

@@ -10,17 +10,17 @@ import Foundation
 import CoreLocation
 
 class CylinderSpeedBooster{
-    fileprivate var _updateRate: Float = 0.1
-    fileprivate var _radius: Float = 3.0
-    fileprivate var _velocity: Float = 1.0
-    fileprivate var _cylinderCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    fileprivate var placeChecker: CircularLocationTransform = CircularLocationTransform()
-    fileprivate var prevTime: Date = Date()
-    fileprivate var isPathRevising: Bool = false
-    fileprivate var isStartMoving: Bool = false
+    private var _updateRate: Float = 0.1
+    private var _radius: Float = 3.0
+    private var _velocity: Float = 1.0
+    private var _cylinderCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
+    private var placeChecker: CircularLocationTransform = CircularLocationTransform()
+    private var prevTime: Date = Date()
+    private var isPathRevising: Bool = false
+    private var isStartMoving: Bool = false
     var forSphereUsing: Bool = true
     
-    fileprivate var initGPS: CLLocationCoordinate2D? = kCLLocationCoordinate2DInvalid
+    private var initGPS: CLLocationCoordinate2D? = kCLLocationCoordinate2DInvalid
     var radius: Float {
         get{
             return self._radius
@@ -155,7 +155,7 @@ class CylinderSpeedBooster{
         return finResult
     }
     
-    fileprivate func expectHeading(aircraftLocation: CLLocationCoordinate2D)->Double{
+    private func expectHeading(aircraftLocation: CLLocationCoordinate2D)->Double{
         let calPointA: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: aircraftLocation.latitude, longitude: cylinderCenter.longitude)
         var realHead: Double = 0
         if aircraftLocation.latitude < cylinderCenter.latitude {
@@ -173,7 +173,7 @@ class CylinderSpeedBooster{
         }
         return realHead
     }
-    fileprivate func isLocationError(aircraftLocation:CLLocationCoordinate2D)->Bool{
+    private func isLocationError(aircraftLocation:CLLocationCoordinate2D)->Bool{
         let expectPlace: CLLocationCoordinate2D = placeChecker.findCirclePoint(radian: expectHeading(aircraftLocation: aircraftLocation))
         if distantCal(spotA: expectPlace, spotB: aircraftLocation) < 2 || abs(distantCal(spotA: self.cylinderCenter, spotB: aircraftLocation) - Double(self.radius)) < 1 {
             return false
@@ -181,7 +181,7 @@ class CylinderSpeedBooster{
             return true
         }
     }
-    fileprivate func isContinuous()-> Bool{
+    private func isContinuous()-> Bool{
         let currentTime: Date = Date()
         let result = (currentTime.timeIntervalSince(prevTime) < 0.15) ? true : false
         prevTime = currentTime
@@ -195,7 +195,7 @@ class CylinderSpeedBooster{
 //    fileprivate func revisePath(aircraftLocation: CLLocationCoordinate2D, isCW: Bool) -> Dictionary<String, Float>{
 //        
 //    }
-    fileprivate func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool{
+    private func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool{
         let aircraftCont: Float = aircraftHeading < 0 ? (aircraftHeading + 360) : aircraftHeading
         var expectCont: Float = toNormalAngle(radTrans(radVal: expectHeading(aircraftLocation: aircraftLocation)))
         expectCont = expectCont < 0 ? (expectCont + 360) : expectCont
@@ -212,22 +212,22 @@ class CylinderSpeedBooster{
         }
 
     }
-    fileprivate func wrongHeadingRevise(){
+    private func wrongHeadingRevise(){
         
     }
     
-    fileprivate func distantCal(spotA: CLLocationCoordinate2D, spotB: CLLocationCoordinate2D)-> Double{
+    private func distantCal(spotA: CLLocationCoordinate2D, spotB: CLLocationCoordinate2D)-> Double{
         let tempLocationA:CLLocation = CLLocation(latitude: spotA.latitude, longitude: spotA.longitude)
         let tempLocationB: CLLocation = CLLocation(latitude: spotB.latitude, longitude: spotB.longitude)
         return tempLocationA.distance(from: tempLocationB)
     }
-    fileprivate func radTrans(radVal:Double) -> Float{
+    private func radTrans(radVal:Double) -> Float{
         return Float(radVal * 180 / Double.pi)
     }
-    fileprivate func degTrans(degVal:Float) -> Double{
+    private func degTrans(degVal:Float) -> Double{
         return Double(Double(degVal) * Double.pi / 180);
     }
-    fileprivate func toNormalAngle(_ angle: Float) -> Float{
+    private func toNormalAngle(_ angle: Float) -> Float{
         var nVal:Float = angle > 0 ? (angle + 180) : (angle - 180)
         if nVal > 180 {
             nVal = nVal - 360 * round(nVal/360)

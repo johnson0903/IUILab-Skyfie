@@ -60,6 +60,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var lb_phoneHeading: UILabel!
     @IBOutlet weak var lb_aircraftLocation: UILabel!
     @IBOutlet var lb_currentControlMode: UILabel!
+    @IBOutlet weak var lb_roll: UILabel!
+    @IBOutlet weak var lb_pitch: UILabel!
+    @IBOutlet weak var lb_yaw: UILabel!
     
     @IBOutlet var btn_GoStop: UIButton!
     @IBOutlet var btn_FineTuning: UIButton!
@@ -93,11 +96,19 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             if let _ = skyfieController?.aircraft {
                 lb_gpsSignalLevel.text = "Level \(String(describing: skyfieController?.currentFCState?.gpsSignalLevel.rawValue))"
                 lb_aircraftLocation.text = "(\(String(describing: skyfieController?.aircraftLocation.latitude)), \(String(describing: skyfieController?.aircraftLocation.longitude)))"
+                lb_roll.text = "\(String(describing: skyfieController?.currentFCState?.attitude.roll))"
+                lb_pitch.text = "\(String(describing: skyfieController?.currentFCState?.attitude.pitch))"
+                lb_yaw.text = "\(String(describing: skyfieController?.currentFCState?.attitude.yaw))"
+                
             } else {
                 lb_gpsSignalLevel.text = "No Aircraft connected"
                 lb_aircraftLocation.text = "Aircraft location invalid"
             }
         }
+    }
+    
+    @IBAction func SetCenterToAircraftLocation(_ sender: Any) {
+        skyfieController?.setCenterToAircraftLocation()
     }
     
     @IBAction func onNearButtonTouchDown(_ sender: UIButton) {
@@ -679,6 +690,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     
     func fineTuningEnd() {
         // stop the aircraft
+        clearCtrlData()
         skyfieController?.stopFineTuningControlTimer()
         skyfieController?.stopAndHover()
         skyfieController?.startRadiusUpdateTimerWith(flightMode: .spherical)
