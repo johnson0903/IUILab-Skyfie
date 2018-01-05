@@ -231,10 +231,10 @@
 				AE79C8741F2C797300B9361F /* PhoneControlViewController.swift */,
 				AE79C8771F2C797300B9361F /* FPVView.swift */,
 				AE79C8781F2C797300B9361F /* LogViewController.swift */,
+				2C346C261FC451E000FBA75B /* FlightInfo.swift */,
 				AE79C8791F2C797300B9361F /* SkyfieController.swift */,
 				2CAA935D1FB206230054154D /* TrackingRenderView.swift */,
 				2C346C221FBF514200FBA75B /* Enumerations.swift */,
-				2C346C261FC451E000FBA75B /* FlightInfo.swift */,
 			);
 			path = SkyfieController;
 			sourceTree = "<group>";
