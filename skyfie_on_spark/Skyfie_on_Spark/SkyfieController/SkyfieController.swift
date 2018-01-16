@@ -26,7 +26,7 @@ protocol SkyfieControllerDelegate {
 class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate {
     
     var delegate: SkyfieControllerDelegate? = nil
-    weak var aircraft: DJIAircraft? = nil
+    var aircraft: DJIAircraft
     var currentFCState: DJIFlightControllerState? = nil
     var currentGimbalState: DJIGimbalState? = nil
     
@@ -72,18 +72,22 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     // Framing Tuning Angle for Gimbal Rotation (in degree)
     private var framingTuningAngle: Float = 5
+    var pressedFinetuningButtonCount = 0
+    private var newFineTuningControlTimer: Timer? = nil
     
-    func initWith(aircraft: DJIAircraft) {
+    // New finetuning
+    private var fineTuningCtrlData = DJIVirtualStickFlightControlData()
+    
+    init(aircraft: DJIAircraft) {
         self.aircraft = aircraft
-        
-        self.aircraft!.flightController?.delegate = self
-        self.aircraft!.gimbal?.delegate = self
+//        self.aircraft.flightController?.delegate = self
+//        self.aircraft.gimbal?.delegate = self
         // Set aircraft flight Control parameters
-        self.aircraft!.flightController?.rollPitchCoordinateSystem = DJIVirtualStickFlightCoordinateSystem.body
-        self.aircraft!.flightController?.isVirtualStickAdvancedModeEnabled = true
-        self.aircraft!.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
-        self.aircraft!.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
-        self.aircraft!.flightController?.rollPitchControlMode = DJIVirtualStickRollPitchControlMode.velocity
+        self.aircraft.flightController?.rollPitchCoordinateSystem = DJIVirtualStickFlightCoordinateSystem.body
+        self.aircraft.flightController?.isVirtualStickAdvancedModeEnabled = true
+        self.aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
+        self.aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+        self.aircraft.flightController?.rollPitchControlMode = DJIVirtualStickRollPitchControlMode.velocity
         
         // initialize user center to fix location for study
         self.circularLocationTransformer.center = CLLocationCoordinate2D(latitude: 22.996731, longitude: 120.222870)
@@ -92,6 +96,26 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         sphereTrackGenerator = SphereSpeedGenerator(radius: Float(circularLocationTransformer.radius), velocity: directPointingRotateSpeed, sphereCenter: circularLocationTransformer.center)
         headingCalibrator = CylinderSpeedBooster(radius: Float(circularLocationTransformer.radius), velocity: fineTuningSpeed, cylinderCenter: circularLocationTransformer.center)
     }
+    
+//    func initWith(aircraft: DJIAircraft) {
+//        self.aircraft = aircraft
+//
+//        self.aircraft!.flightController?.delegate = self
+//        self.aircraft!.gimbal?.delegate = self
+//        // Set aircraft flight Control parameters
+//        self.aircraft!.flightController?.rollPitchCoordinateSystem = DJIVirtualStickFlightCoordinateSystem.body
+//        self.aircraft!.flightController?.isVirtualStickAdvancedModeEnabled = true
+//        self.aircraft!.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
+//        self.aircraft!.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+//        self.aircraft!.flightController?.rollPitchControlMode = DJIVirtualStickRollPitchControlMode.velocity
+//
+//        // initialize user center to fix location for study
+//        self.circularLocationTransformer.center = CLLocationCoordinate2D(latitude: 22.996731, longitude: 120.222870)
+//
+//        // initialize sphereTrackGenerator and headingCalibrator
+//        sphereTrackGenerator = SphereSpeedGenerator(radius: Float(circularLocationTransformer.radius), velocity: directPointingRotateSpeed, sphereCenter: circularLocationTransformer.center)
+//        headingCalibrator = CylinderSpeedBooster(radius: Float(circularLocationTransformer.radius), velocity: fineTuningSpeed, cylinderCenter: circularLocationTransformer.center)
+//    }
     
     // MARK: - States Update Callback Method
     func flightController(_ fc: DJIFlightController, didUpdate state: DJIFlightControllerState) {
@@ -119,7 +143,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             return
         }
         
-        self.aircraft!.flightController?.startTakeoff(completion: {[weak self] (error: Error?) -> Void in
+        self.aircraft.flightController?.startTakeoff(completion: {[weak self] (error: Error?) -> Void in
             if error != nil {
                 self?.delegate?.showAlertResultOnView("Takeoff: \(error!)")
             }
@@ -137,7 +161,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             self.delegate?.showAlertResultOnView("No Aircraft Connected")
             return
         }
-        self.aircraft?.flightController?.startLanding(completion: {[weak self] (error: Error?) -> Void in
+        self.aircraft.flightController?.startLanding(completion: {[weak self] (error: Error?) -> Void in
             if error != nil {
                 self?.delegate?.showAlertResultOnView("Landing: \(error!)")
             }
@@ -152,7 +176,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             self.delegate?.showAlertResultOnView("No Aircraft Connected")
             return
         }
-        aircraft?.flightController?.setVirtualStickModeEnabled(true, withCompletion: {[weak self] (error: Error?) -> Void in
+        aircraft.flightController?.setVirtualStickModeEnabled(true, withCompletion: {[weak self] (error: Error?) -> Void in
             if error != nil {
                 self?.delegate?.showAlertResultOnView("enableStickControlMode: \(error!.localizedDescription)")
             }
@@ -164,7 +188,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             self.delegate?.showAlertResultOnView("No Aircraft Connected")
             return
         }
-        aircraft?.flightController?.setVirtualStickModeEnabled(false, withCompletion: {[weak self] (error: Error?) -> Void in
+        aircraft.flightController?.setVirtualStickModeEnabled(false, withCompletion: {[weak self] (error: Error?) -> Void in
             if error != nil {
                 self?.delegate?.showAlertResultOnView("disableStickControlMode:\(error!.localizedDescription)")
             }
@@ -203,7 +227,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     }
     
     func startDirectPointingTimer() {
-        if aircraft?.flightController?.isVirtualStickControlModeAvailable() == false {
+        if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
             enableVirtualStickControlMode()
         }
         
@@ -218,7 +242,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         var ctrlData = DJIVirtualStickFlightControlData()
         ctrlData.pitch = 0
         // set aircraft altitude to destination altitude (m)
-        aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
+        aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
         ctrlData.verticalThrottle = directPointingDestAltitude
         
         // determine whether target azimuth should change
@@ -232,7 +256,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         if shouldHeadingCalibrate(currentDistance) {
             self.delegate?.showAlertResultOnView("Change Heading!")
             // calibrate aircraft heading to target aziumuth
-            aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
             
             ctrlData.roll = 0
             if targetAziumuth! > 180 {
@@ -243,7 +267,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
         else { // heading is ok, getting the velocity and go.
-            aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
             
             ctrlData.yaw = 0
             ctrlData.roll = directPointingVelocityModified2(currentDistance: currentDistance)
@@ -271,8 +295,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 reachTargetCounter = 0
             }
         }
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
                 if error == nil {
                     // tunging gimbal angle by current altitude
                     self?.GimbalAutoTuning()
@@ -371,7 +395,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     // 每 0.1 秒觸發一次 "performShpereDirectPointing" function
     func startDirectPointingTimer(flightInfo: Dictionary<String, Any>) {
-        if aircraft?.flightController?.isVirtualStickControlModeAvailable() == false {
+        if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
             enableVirtualStickControlMode()
         }
 
@@ -435,7 +459,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 
             if aircraftShouldMove["angle"] == 1 {
                 // heading should calibrate to correct heading in angle
-                aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                 ctrlData.roll = 0.0
                 ctrlData.verticalThrottle = 0.0
                 ctrlData.yaw = aircraftShouldMove["rotate"]!
@@ -459,14 +483,14 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 if ctrlData.roll == 0 && ctrlData.verticalThrottle == 0 {
                     if shouldMoveUp { // altitude should be same as circle radius
                         if aircraftAltitude < circularLocationTransformer.radius + 1.5 {
-                            aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
+                            aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                             
                             ctrlData.verticalThrottle = Float(circularLocationTransformer.radius) + 1.5
                         }
                     }
                     else { // down, altitude should be 1.5m
                         if aircraftAltitude > 1.5 {
-                            aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
+                            aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                             
                             ctrlData.verticalThrottle = 1.5
                         }
@@ -475,8 +499,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
         
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: nil)
         }
     }
     
@@ -497,13 +521,13 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.horizontalTrans(aircraftLocation: hoverLocation, aircraftHeading: Float(aircraftHeading), altitude: Float(aircraftAltitude), isCW: true))!
                 if aircraftShouldMove["angle"] == 1 {
                     // aircraft heading should calibrate to correct heading in angle
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                     ctrlData.pitch = 0
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
                 }
                 else {
                     // aircraft heading is ok, start to perform horizontal move
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
                     ctrlData.pitch = -aircraftShouldMove["speed"]!
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
                 }
@@ -512,21 +536,21 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.horizontalTrans(aircraftLocation: hoverLocation, aircraftHeading: Float(aircraftHeading), altitude: Float(aircraftAltitude), isCW: false))!
                 if aircraftShouldMove["angle"] == 1 {
                     // aircraft heading should calibrate to correct heading in angle
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                     ctrlData.pitch = 0
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
                 }
                 else {
                     // aircraft heading is ok, start to perform horizontal move
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
                     ctrlData.pitch = -aircraftShouldMove["speed"]!
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
                 }
             }
         }
         
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: nil)
         }
     }
     
@@ -752,7 +776,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     // for flight control, we choose 10 Hz, same as the frequency of the aircraft's state being updated
     func startTimerForHeadingCalibration() {
-        if aircraft?.flightController?.isVirtualStickControlModeAvailable() == false {
+        if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
             enableVirtualStickControlMode()
         }
         
@@ -781,18 +805,18 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         
             if aircraftShouldMove["angle"] == 1 {
             // aircraft heading should calibrate to correct heading in angle
-                aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                 var ctrlData: DJIVirtualStickFlightControlData = DJIVirtualStickFlightControlData()
                 ctrlData.roll = 0
                 ctrlData.pitch = 0
                 ctrlData.verticalThrottle = 0
                 ctrlData.yaw = aircraftShouldMove["rotate"]!
 
-                if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-                    aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+                if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+                    aircraft.flightController!.send(ctrlData, withCompletion: nil)
                 }
                 else {
-                    aircraft?.flightController?.setVirtualStickModeEnabled(true, withCompletion: nil)
+                    aircraft.flightController?.setVirtualStickModeEnabled(true, withCompletion: nil)
                 }
             }
             else {
@@ -899,19 +923,19 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         
                 if aircraftShouldMove["angle"] == 1 {
                     // aircraft heading should calibrate to correct heading in angle
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
 
                     ctrlData.roll = 0
                     ctrlData.pitch = 0
                     ctrlData.verticalThrottle = 0
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
             
-                    if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-                        aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+                    if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+                        aircraft.flightController!.send(ctrlData, withCompletion: nil)
                     }
                 }
                 else { // heading is ok, start to perform movement
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
 
                     ctrlData.pitch = 0.0
                     ctrlData.yaw = 0.0
@@ -921,7 +945,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
         else if flightMode == .cartesian{ // Cartesian
-            aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
         
             ctrlData.roll = ctrlRoll
             ctrlData.pitch = ctrlPitch
@@ -988,8 +1012,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 //        print("yaw: \(ctrlData.yaw)")
 //        print("verticalThrottle: \(ctrlData.verticalThrottle)")
 ///////////
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
                 if error == nil {
                     // tunging gimbal angle by current altitude
                     self?.GimbalAutoTuning()
@@ -1008,7 +1032,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             return 1
         }
     }
-    
     func startTimerForVerticalMoveWith(_ flightInfo: Dictionary<String, Any>) {
         
         if fineTuningControlTimer == nil {
@@ -1045,14 +1068,14 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         
                 if aircraftShouldMove["angle"] == 1 {
                     // heading should calibrate to correct heading in angle
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                     ctrlData.roll = 0.0
                     ctrlData.verticalThrottle = 0.0
                     ctrlData.yaw = aircraftShouldMove["rotate"]!
                 }
                 else {
                     // heading is ok, start to perform vertical move
-                    aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                    aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
                     ctrlData.yaw = 0.0
                 
                     if shouldMoveUp {
@@ -1068,14 +1091,14 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                     if ctrlData.roll == 0 && ctrlData.verticalThrottle == 0 {
                         if shouldMoveUp { // altitude should be same as circle radius
                             if aircraftAltitude < circularLocationTransformer.radius + 1.5 {
-                                aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
+                                aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                                 
                                 ctrlData.verticalThrottle = Float(circularLocationTransformer.radius) + 1.5
                             }
                         }
                         else { // down, altitude should be 1.5m
                             if aircraftAltitude > 1.5 {
-                                aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
+                                aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                                 
                                 ctrlData.verticalThrottle = 1.5
                             }
@@ -1129,8 +1152,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
 
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
                 if error == nil {
                     // tunging gimbal angle by current altitude
                     //self?.GimbalAutoTuning()
@@ -1164,20 +1187,69 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 //        }
     }
     
+    func newFineTuneHorizontalMove(direction: FineTuningDirection) {
+        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+        fineTuningCtrlData.pitch = (direction == .Left) ? Float(-1.5) : Float(1.5)
+        if newFineTuningControlTimer == nil {
+            newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func newPerformHorizontalMove(_ timer: Timer) {
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
+        }
+    }
+    
+    func newFineTuneVerticalMove(direction: FineTuningDirection) {
+        let gimbalAngle = -(currentGimbalState?.attitudeInDegrees.pitch)!
+        let gimbalAngleInRadians = (toRadian(from: Double(90 - gimbalAngle)))
+        
+        if direction == .Up {
+            if aircraftAltitude >= 20 {
+                fineTuningCtrlData.verticalThrottle = 0
+            }
+            else {
+                fineTuningCtrlData.roll = cos(Float(gimbalAngleInRadians))
+                fineTuningCtrlData.verticalThrottle = sin(Float(gimbalAngleInRadians))
+            }
+        }
+        else {
+            if self.aircraftAltitude <= 1.5 {
+                fineTuningCtrlData.verticalThrottle = 0
+            }
+            else {
+                fineTuningCtrlData.roll = -cos(Float(gimbalAngleInRadians))
+                fineTuningCtrlData.verticalThrottle = -sin(Float(gimbalAngleInRadians))
+            }
+        }
+        
+        if newFineTuningControlTimer == nil {
+            newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
+        }
+    }
+    
+    @objc func newPerformVerticalMove(_ timer: Timer) {
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
+        }
+    }
+    
     @objc func checkAndPerformHorizontalMove(_ timer: Timer) {
-        print("水平")
+
         let flightInfo = timer.userInfo as! Dictionary<String, Any>
         let flightMode = flightInfo["mode"] as! FlightMode
         
         var ctrlData: DJIVirtualStickFlightControlData = DJIVirtualStickFlightControlData()
         ctrlData.verticalThrottle = 0.0
+        switch flightMode {
         
-        // In spherical fine tuning mode, aircraft's heading should be absolutely right (face to user) before performing movements.
-        if flightMode == .spherical {
+        case .spherical:
+            // In spherical fine tuning mode, aircraft's heading should be absolutely right (face to user) before performing movements.
             if !CLLocationCoordinate2DIsValid(hoverLocation) {
                 if (currentFCState?.velocityX == 0 || currentFCState?.velocityX == -0)
-                && (currentFCState?.velocityY == 0 || currentFCState?.velocityY == -0)
-                && (currentFCState?.velocityZ == 0 || currentFCState?.velocityZ == -0)
+                    && (currentFCState?.velocityY == 0 || currentFCState?.velocityY == -0)
+                    && (currentFCState?.velocityZ == 0 || currentFCState?.velocityZ == -0)
                 {
                     hoverLocation = self.aircraftLocation
                 }
@@ -1185,18 +1257,18 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             else { // hoverLocation have been set
                 ctrlData.roll = 0.0
                 let shouldMoveRight = flightInfo["moveRight"] as! Bool
-        
+                
                 if shouldMoveRight == true {
                     let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.horizontalTrans(aircraftLocation: hoverLocation, aircraftHeading: Float(aircraftHeading), altitude: Float(aircraftAltitude), isCW: true))!
                     if aircraftShouldMove["angle"] == 1 {
                         // aircraft heading should calibrate to correct heading in angle
-                        aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                         ctrlData.pitch = 0
                         ctrlData.yaw = aircraftShouldMove["rotate"]!
                     }
                     else {
                         // aircraft heading is ok, start to perform horizontal move
-                        aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
                         ctrlData.pitch = -aircraftShouldMove["speed"]!
                         ctrlData.yaw = aircraftShouldMove["rotate"]!
                     }
@@ -1205,46 +1277,50 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                     let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.horizontalTrans(aircraftLocation: hoverLocation, aircraftHeading: Float(aircraftHeading), altitude: Float(aircraftAltitude), isCW: false))!
                     if aircraftShouldMove["angle"] == 1 {
                         // aircraft heading should calibrate to correct heading in angle
-                        aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
                         ctrlData.pitch = 0
                         ctrlData.yaw = aircraftShouldMove["rotate"]!
                     }
                     else {
                         // aircraft heading is ok, start to perform horizontal move
-                        aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+                        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
                         ctrlData.pitch = -aircraftShouldMove["speed"]!
                         ctrlData.yaw = aircraftShouldMove["rotate"]!
                     }
                 }
             }
-        }
-        else { // Cartesian
-            aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            
+        case .cartesian:
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
             let flightDirection = flightInfo["direction"] as! String
             ctrlData.pitch = (flightDirection == "left") ? Float(-1.5) : Float(1.5)
-//            ctrlData.roll = 0
-//            ctrlData.yaw = 0
-//            ctrlData.verticalThrottle = 0
+            
+        case .gimbal:
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            let flightDirection = flightInfo["direction"] as! String
+            fineTuningCtrlData.pitch = (flightDirection == "left") ? Float(-1.5) : Float(1.5)
+            
         }
+
 ///////////
 //        print("Horizontal pitch: \(ctrlData.pitch)")
 //        print("Horizonral yaw: \(ctrlData.yaw) \n")
 //        print("Aircraft Heading: \(self.aircraftHeading)")
 ///////////
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
         }
     }
     
     // for left/right direciton tuning, should tune aircraft's heading due to DJI hardware setting
     func startTimerForFramingTuning(_ rotateDirection: Int) {
-        if aircraft?.flightController?.isVirtualStickControlModeAvailable() == false {
+        if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
             enableVirtualStickControlMode()
         }
         
         if fineTuningControlTimer == nil {
             ctrlYaw = 0
-            aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
             fineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(performFramingTuning), userInfo: nil, repeats: true)
             fineTuningControlTimer?.fire()
         }
@@ -1268,14 +1344,14 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         ctrlData.verticalThrottle = 0
         ctrlData.yaw = ctrlYaw
         
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: nil)
         }
     }
     
     func stopAndHover() {
-        aircraft?.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
-        aircraft?.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
+        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+        aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
         
         var ctrlData: DJIVirtualStickFlightControlData = DJIVirtualStickFlightControlData()
         ctrlData.pitch = 0.0
@@ -1283,16 +1359,36 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         ctrlData.yaw = 0.0
         ctrlData.verticalThrottle = 0.0
         
-        if ((aircraft != nil && aircraft!.flightController != nil) && (aircraft!.flightController!.isVirtualStickControlModeAvailable())) {
-            aircraft!.flightController!.send(ctrlData, withCompletion: nil)
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(ctrlData, withCompletion: nil)
         }
         print("### stop and hover ###")
+    }
+    
+    func newFineTuneStopAndHover(){
+        aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+        aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.velocity
+        fineTuningCtrlData.roll = 0.0
+        fineTuningCtrlData.pitch = 0.0
+        fineTuningCtrlData.yaw = 0.0
+        fineTuningCtrlData.verticalThrottle = 0.0
+        
+        if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+            aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
+        }
     }
     
     func stopFineTuningControlTimer() {
         if fineTuningControlTimer != nil {
             fineTuningControlTimer?.invalidate()
             fineTuningControlTimer = nil
+        }
+    }
+    
+    func stopNewFineTuningTimer() {
+        if newFineTuningControlTimer != nil {
+            newFineTuningControlTimer?.invalidate()
+            newFineTuningControlTimer = nil
         }
     }
     
@@ -1374,7 +1470,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 // MARK: - Gimbal Tuning Method
     // Gimbal angle tuning automatically for up/down fine tuning and tradtional pitch control
     func GimbalAutoTuning() {
-        let gimbal: DJIGimbal? = aircraft?.gimbal
+        let gimbal: DJIGimbal? = aircraft.gimbal
         if gimbal != nil {
             let currentElevation = findCurrentElevationRadians() * 180 / .pi
             let gimbalPitchShouldBe = (-currentElevation) as NSNumber
@@ -1389,7 +1485,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 
     // Gimbal angle tuning according to framing tuning command
     func GimbalTuningForFramingTuning(to direction: String) {
-        let gimbal: DJIGimbal? = aircraft?.gimbal
+        let gimbal: DJIGimbal? = aircraft.gimbal
         if gimbal != nil {
             if direction == "Up" {
                 let gimbalRotation = DJIGimbalRotation(pitchValue: NSNumber(value: framingTuningAngle), rollValue: 0, yawValue: 0, time: 1, mode: DJIGimbalRotationMode.relativeAngle)
@@ -1411,7 +1507,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     }
     
     func GimbalStop() {
-        let gimbal: DJIGimbal? = aircraft?.gimbal
+        let gimbal: DJIGimbal? = aircraft.gimbal
         if gimbal != nil {
             let gimbalRotation = DJIGimbalRotation(pitchValue: 0, rollValue: 0, yawValue: 0, time: 1, mode: DJIGimbalRotationMode.relativeAngle)
             gimbal?.rotate(with: gimbalRotation, completion: nil)

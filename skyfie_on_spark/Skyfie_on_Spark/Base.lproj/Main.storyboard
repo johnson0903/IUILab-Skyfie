@@ -1472,6 +1472,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZY-l0-WR8">
                                         <rect key="frame" x="286" y="56" width="65" height="146"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="1"/>
                                         <state key="normal" title="right" image="arrow-right"/>
                                         <connections>
@@ -1482,6 +1483,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H0P-K5-fi1">
                                         <rect key="frame" x="8" y="56" width="65" height="147"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="1"/>
                                         <state key="normal" title="left" image="arrow-left"/>
                                         <connections>
@@ -1492,6 +1494,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ED6-Hg-CvO">
                                         <rect key="frame" x="8" y="0.0" width="343" height="48"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="1"/>
                                         <state key="normal" title="up" image="arrow-up"/>
                                         <connections>
@@ -1502,6 +1505,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nSe-tT-lfW">
                                         <rect key="frame" x="9" y="210" width="343" height="60"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="1"/>
                                         <state key="normal" title="down" image="arrow-down"/>
                                         <connections>
