@@ -63,7 +63,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     // Constant
     // Maxmum and minimum altitude in meter
-    let maxAltitude: Double = 20
+    let maxAltitude: Double = 15
     let minAltitude: Double = 1.5
     
     // Fine Tuning Speed (m/s)
@@ -80,8 +80,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     init(aircraft: DJIAircraft) {
         self.aircraft = aircraft
-//        self.aircraft.flightController?.delegate = self
-//        self.aircraft.gimbal?.delegate = self
         // Set aircraft flight Control parameters
         self.aircraft.flightController?.rollPitchCoordinateSystem = DJIVirtualStickFlightCoordinateSystem.body
         self.aircraft.flightController?.isVirtualStickAdvancedModeEnabled = true
@@ -95,6 +93,10 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         // initialize sphereTrackGenerator and headingCalibrator
         sphereTrackGenerator = SphereSpeedGenerator(radius: Float(circularLocationTransformer.radius), velocity: directPointingRotateSpeed, sphereCenter: circularLocationTransformer.center)
         headingCalibrator = CylinderSpeedBooster(radius: Float(circularLocationTransformer.radius), velocity: fineTuningSpeed, cylinderCenter: circularLocationTransformer.center)
+
+        super.init()
+        self.aircraft.flightController?.delegate = self
+        self.aircraft.gimbal?.delegate = self
     }
     
 //    func initWith(aircraft: DJIAircraft) {
@@ -337,7 +339,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     func executeDirectPointing(userHeading: CLLocationDirection?, userElevation: Double) {
     
         if CLLocationCoordinate2DIsValid(aircraftLocation) {
-            
+            var isRightHead = false
             // if current radius less than 2 meter shouldn't move
             if findCurrentRealRadiusWith(flightMode: .spherical) < 2 {
                 stopFineTuningControlTimer()
@@ -347,13 +349,19 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
             
             //if current radius greater than 15 meter shouldn't move
-            if findCurrentRealRadiusWith(flightMode: .spherical) > 15 {
+            if findCurrentRealRadiusWith(flightMode: .spherical) > 10 {
                 stopFineTuningControlTimer()
                 stopAndHover()
                 self.delegate?.showAlertResultOnView("Can't move! Current aircraft location is too far")
                 return
             }
             
+            if !(sphereTrackGenerator?.isWrongHead(aircraftLocation: aircraftLocation, aircraftHeading: Float(aircraftHeading)))! {
+                isRightHead = true
+            }
+            else {
+                
+            }
             self.directPointingDestAltitude = Float(findDestinationAltitudeBy(elevation: userElevation))
             let shouldMoveUp = previousDestAltitude < directPointingDestAltitude ? true : false
             let flightInfo: Dictionary<String, Any> = ["mode": FlightMode.spherical, "moveRight": shouldMoveRight(userHeading: userHeading), "userHeading": userHeading!, "moveUp": shouldMoveUp]
@@ -398,13 +406,14 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
             enableVirtualStickControlMode()
         }
-
+        
         if directPointingControlTimer == nil {
             ctrlPitch = 0
             ctrlRoll = 0
             directPointingControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(performSphereDirectPointing), userInfo: flightInfo, repeats: true)
             self.delegate?.didDirectPointingStartWith(destLocation: directPointingDestLocation, destAltitude: directPointingDestAltitude)
         }
+    
     }
     
     // 目前的directPointing
@@ -867,7 +876,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             ctrlPitch = 0
             ctrlVerticalThrottle = 0
             hoverLocation = kCLLocationCoordinate2DInvalid
-            
+            print("fineTuningControlTimer restart")
             fineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkAndPerformNearFarMove), userInfo: flightInfo, repeats: true)
             fineTuningControlTimer?.fire()            
         }
@@ -908,6 +917,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         // In spherical fine tuning mode, aircraft's heading should be absolutely right (face to user) before performing movements.
         if flightMode == .spherical {
             if !CLLocationCoordinate2DIsValid(hoverLocation) {
+                print("set hoverlocation")
                 if (currentFCState?.velocityX == 0 || currentFCState?.velocityX == -0)
                 && (currentFCState?.velocityY == 0 || currentFCState?.velocityY == -0)
                 && (currentFCState?.velocityZ == 0 || currentFCState?.velocityZ == -0)
@@ -953,6 +963,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             ctrlData.verticalThrottle = 0
         }
         else { //Gimbal
+    
             let moveNear = flightInfo["moveNear"] as! Bool
             var gimbalAngle: Float = 0.0
             if currentGimbalState != nil {
@@ -967,26 +978,28 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             let moveSpeed = flightInfo["speed"] as! Float
             
             if moveNear { // move near
+//                print("move near")
                 if self.aircraftAltitude <= 1.5 {
                     ctrlData.verticalThrottle = 0
                 }
                 else {
                     ctrlData.roll = cos(Float(angleInRadians)) * moveSpeed
-                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
+//                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
                     ctrlData.verticalThrottle = -sin(Float(angleInRadians)) * moveSpeed
-                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
+//                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
                 }
             }
             else { //move far
+//                print("move far")
                 if aircraftAltitude >= 20 {
                     ctrlData.verticalThrottle = 0
                     self.delegate?.showAlertResultOnView("Can't Move far anymore")
                 }
                 else {
                     ctrlData.roll = -cos(Float(angleInRadians)) * moveSpeed
-                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
+//                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
                     ctrlData.verticalThrottle = sin(Float(angleInRadians)) * moveSpeed
-                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
+//                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
                 }
             }
         }
@@ -1016,7 +1029,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             aircraft.flightController!.send(ctrlData, withCompletion: {[weak self](error: Error?) -> Void in
                 if error == nil {
                     // tunging gimbal angle by current altitude
-                    self?.GimbalAutoTuning()
+                    
+                    //self?.GimbalAutoTuning() // 因為現在根據gimbal角度調整遠近，所以移動遠近時不需要調整gimbal角度
                 }
             })
         }
@@ -1189,9 +1203,10 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     
     func newFineTuneHorizontalMove(direction: FineTuningDirection) {
         aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
-        fineTuningCtrlData.pitch = (direction == .Left) ? Float(-1.5) : Float(1.5)
+        fineTuningCtrlData.pitch = (direction == .Left) ? Float(-1) : Float(1)
         if newFineTuningControlTimer == nil {
             newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
+            newFineTuningControlTimer?.fire()
         }
     }
     
@@ -1206,7 +1221,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         let gimbalAngleInRadians = (toRadian(from: Double(90 - gimbalAngle)))
         
         if direction == .Up {
-            if aircraftAltitude >= 20 {
+            if aircraftAltitude >= maxAltitude {
                 fineTuningCtrlData.verticalThrottle = 0
             }
             else {
@@ -1225,7 +1240,8 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         }
         
         if newFineTuningControlTimer == nil {
-            newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
+            newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformVerticalMove), userInfo: nil, repeats: true)
+            newFineTuningControlTimer?.fire()
         }
     }
     
@@ -1382,6 +1398,18 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         if fineTuningControlTimer != nil {
             fineTuningControlTimer?.invalidate()
             fineTuningControlTimer = nil
+        }
+    }
+    
+    func stopFineTuningFor(direction: FineTuningDirection) {
+        switch direction {
+        case .Left,
+             .Right:
+            fineTuningCtrlData.pitch = 0.0
+        case .Down,
+             .Up:
+            fineTuningCtrlData.roll = 0.0
+            fineTuningCtrlData.verticalThrottle = 0.0
         }
     }
     

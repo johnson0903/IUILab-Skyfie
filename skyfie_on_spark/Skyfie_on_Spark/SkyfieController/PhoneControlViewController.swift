@@ -112,17 +112,21 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     }
     
     @IBAction func onNearButtonTouchDown(_ sender: UIButton) {
-        let moveSpeed: Float = 1.5
-        var flightInfo: Dictionary<String, Any> = [:]
-        flightInfo = ["mode": FlightMode.gimbal, "moveNear": true, "speed": moveSpeed]
-        skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+        if skyfieController?.pressedFinetuningButtonCount == 0 {
+            let moveSpeed: Float = 1.5
+            var flightInfo: Dictionary<String, Any> = [:]
+            flightInfo = ["mode": FlightMode.gimbal, "moveNear": true, "speed": moveSpeed]
+            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+        }
     }
     
     @IBAction func onFarButtonTouchDown(_ sender: UIButton) {
-        let moveSpeed: Float = 1.5
-        var flightInfo: Dictionary<String, Any> = [:]
-        flightInfo = ["mode": FlightMode.gimbal, "moveNear": false, "speed": moveSpeed]
-        skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+        if skyfieController?.pressedFinetuningButtonCount == 0 {
+            let moveSpeed: Float = 1.5
+            var flightInfo: Dictionary<String, Any> = [:]
+            flightInfo = ["mode": FlightMode.gimbal, "moveNear": false, "speed": moveSpeed]
+            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+        }
     }
     
     @IBAction func onNearFarButtonTouchUp(_ sender: UIButton) {
@@ -134,7 +138,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 
     @IBAction func onTuningButtonTouchDown(_ sender: UIButton) {
         skyfieController?.pressedFinetuningButtonCount += 1
-        print(skyfieController?.pressedFinetuningButtonCount)
         switch sender.currentTitle! {
         case "up":
             self.finetuningFor(.Up)
@@ -148,17 +151,33 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             return
         }
     }
+
     
     @IBAction func onTuningButtonTouchUp(_ sender: UIButton) {
         
+        var direction: FineTuningDirection
+        switch sender.currentTitle! {
+        case "up":
+            direction = .Up
+        case "down":
+            direction = .Down
+        case "left":
+            direction = .Left
+        case "right":
+            direction = .Right
+        default:
+            return
+        }
+        // 如果還有被按著的按鈕要處理放開的方向
         if (skyfieController?.pressedFinetuningButtonCount)! > 0 {
+            skyfieController?.stopFineTuningFor(direction: direction)
             skyfieController?.pressedFinetuningButtonCount -= 1
         }
-        if skyfieController?.pressedFinetuningButtonCount == 0 {
-            self.fineTuningEnd()
-            print("stop new")
+        
+        if (skyfieController?.pressedFinetuningButtonCount)! == 0 {
+            //self.fineTuningEnd()
+            self.newFineTuningEnd()
         }
-        print(skyfieController?.pressedFinetuningButtonCount)
     }
 
     //var fineTuningView: FineTuningView = FineTuningView()
@@ -277,10 +296,19 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         }
     }
     
+    // MARK: - viewDidDisappear
+    override func viewDidDisappear(_ animated: Bool) {
+        self.fineTuningEnd()
+        self.newFineTuningEnd()
+    }
+    
+    // MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         
         self.aircraft = DJISDKManager.product() as? DJIAircraft
         if aircraft != nil {
+            skyfieController?.stopNewFineTuningTimer()
+            skyfieController?.newFineTuneStopAndHover()
             // fpvPreviewer Setup
             setVideoPreview()
             
@@ -624,13 +652,13 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     
     func finetuningFor(_ direction: FineTuningDirection) {
         clearCtrlData()
-        var flightInfo: Dictionary<String, Any> = [:]
-        let userHeading = Double(phoneHeading!)
+//        var flightInfo: Dictionary<String, Any> = [:]
+//        let userHeading = Double(phoneHeading!)
         
         switch direction {
         case .Left:
-            //flightInfo = ["mode": FlightMode.gimbal, "heading": userHeading, "direction": "left"]
-            //skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
+//            flightInfo = ["mode": FlightMode.gimbal, "heading": userHeading, "direction": "left"]
+//            skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
             skyfieController?.newFineTuneHorizontalMove(direction: .Left)
         case .Right:
 //            flightInfo = ["mode": FlightMode.gimbal, "heading": userHeading, "direction": "right"]
@@ -703,6 +731,10 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         clearCtrlData()
         skyfieController?.stopFineTuningControlTimer()
         skyfieController?.stopAndHover()
+        skyfieController?.startRadiusUpdateTimerWith(flightMode: .spherical)
+    }
+    
+    func newFineTuningEnd() {
         skyfieController?.stopNewFineTuningTimer()
         skyfieController?.newFineTuneStopAndHover()
         skyfieController?.startRadiusUpdateTimerWith(flightMode: .spherical)

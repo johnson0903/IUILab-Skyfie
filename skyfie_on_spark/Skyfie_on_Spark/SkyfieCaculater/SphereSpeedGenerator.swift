@@ -200,10 +200,8 @@ class SphereSpeedGenerator{
         if isWrongHead(aircraftLocation: aircraftLocation, aircraftHeading: aircraftHeading){
             fineResult["rotate"] = toNormalAngle(radToDegree(radVal: expectHeading(aircraftLocation: aircraftLocation)))
             fineResult["angle"] = 1
-            print("校正中")
         }
         if up {
-            print("升高")
             print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
             if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
                 fineResult = ["up": angularVelocity * Float(cos(singleVelocityTrans)), "forward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
@@ -217,7 +215,6 @@ class SphereSpeedGenerator{
             }
         }
         else {
-            print("下降")
             print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
             if accumVerticalAngle <= Double.pi/2 && accumVerticalAngle > 0 {
                 fineResult =  ["down": angularVelocity * Float(cos(singleVelocityTrans)), "backward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
@@ -263,7 +260,7 @@ class SphereSpeedGenerator{
         return realHead
     }
     
-    private func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool {
+    func isWrongHead(aircraftLocation:CLLocationCoordinate2D, aircraftHeading: Float)-> Bool {
         
         // 將飛機原本的 0~180、0~-180 方位換算為 0~360 度
         let aircraftCont: Float = aircraftHeading < 0 ? (aircraftHeading + 360) : aircraftHeading

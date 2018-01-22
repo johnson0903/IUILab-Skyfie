@@ -955,55 +955,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" restorationIdentifier="fpvView" translatesAutoresizingMaskIntoConstraints="NO" id="sOJ-Tj-aUM" userLabel="fpvView" customClass="FPVView" customModule="Skyfie_on_Spark" customModuleProvider="target">
-                                <rect key="frame" x="8" y="28" width="359" height="288"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7A5-Zu-9gz">
-                                        <rect key="frame" x="286" y="67" width="65" height="154"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="right" image="arrow-right"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="Pv1-8A-iKH"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="jHE-0e-IE5"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDP-MJ-OS4">
-                                        <rect key="frame" x="8" y="69" width="65" height="152"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="left" image="arrow-left"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="xzf-mQ-ica"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="KxQ-RM-lFY"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MSO-pD-MwL">
-                                        <rect key="frame" x="68" y="0.0" width="222" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="up" image="arrow-up"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="sd9-IU-v2A"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="GB7-qP-0lf"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dAP-ZA-ApV">
-                                        <rect key="frame" x="68" y="228" width="222" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="down" image="arrow-down"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="iEb-9j-NZ8"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="0vB-Ql-kDy"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="fpvView" translatesAutoresizingMaskIntoConstraints="NO" id="sOJ-Tj-aUM" userLabel="fpvView" customClass="FPVView" customModule="Skyfie_on_Spark" customModuleProvider="target">
+                                <rect key="frame" x="8" y="6" width="359" height="288"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="sOJ-Tj-aUM" secondAttribute="height" multiplier="76:61" id="0wY-S1-S4b"/>
-                                </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7A5-Zu-9gz">
+                                <rect key="frame" x="296" y="73" width="65" height="154"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="right" image="arrow-right"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="Pv1-8A-iKH"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="jHE-0e-IE5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDP-MJ-OS4">
+                                <rect key="frame" x="16" y="74" width="65" height="152"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="left" image="arrow-left"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="xzf-mQ-ica"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="KxQ-RM-lFY"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MSO-pD-MwL">
+                                <rect key="frame" x="76" y="6" width="222" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="up" image="arrow-up"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="sd9-IU-v2A"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="GB7-qP-0lf"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dAP-ZA-ApV">
+                                <rect key="frame" x="76" y="232" width="222" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="down" image="arrow-down"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="iEb-9j-NZ8"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="0vB-Ql-kDy"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHe-Gj-zGH" userLabel="Render View" customClass="TrackingRenderView" customModule="Skyfie_on_Spark" customModuleProvider="target">
                                 <rect key="frame" x="8" y="8" width="359" height="288"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1018,12 +1014,9 @@
                                     <action selector="onTakeoffLandingButtonClicked:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="MYY-Fl-VRf"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ny2-0T-L7H" userLabel="FineTuning">
-                                <rect key="frame" x="352" y="324" width="30" height="139"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="139" id="LbP-vL-HZc"/>
-                                    <constraint firstAttribute="width" constant="30" id="qhk-4q-ePA"/>
-                                </constraints>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ny2-0T-L7H" userLabel="FineTuning">
+                                <rect key="frame" x="352" y="390" width="16" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <state key="normal" title=" ll" backgroundImage="btn"/>
                                 <connections>
@@ -1064,12 +1057,9 @@
                                     <action selector="onNearFarButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="y99-8t-cGl"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S2G-ze-hF3" userLabel="GoStop">
-                                <rect key="frame" x="127" y="353" width="120" height="101"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="101" id="CCl-Ty-wSA"/>
-                                    <constraint firstAttribute="width" constant="120" id="IRh-CD-Yrb"/>
-                                </constraints>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S2G-ze-hF3" userLabel="GoStop">
+                                <rect key="frame" x="123" y="353" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="30"/>
                                 <state key="normal" title="GO" backgroundImage="stick_base">
                                     <color key="titleColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1085,6 +1075,14 @@
                                 <state key="normal" title="Log" backgroundImage="stick_base"/>
                                 <connections>
                                     <action selector="showLogView:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="RVB-W5-leE"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAi-vF-zqI">
+                                <rect key="frame" x="138" y="529" width="106" height="104"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Snap" image="snap"/>
+                                <connections>
+                                    <action selector="onSnapButtonClicked:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="pKj-9b-KkP"/>
                                 </connections>
                             </button>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1EZ-9x-dra">
@@ -1168,57 +1166,8 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vAi-vF-zqI">
-                                <rect key="frame" x="132.5" y="462" width="110" height="110"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="110" id="A5H-KF-1bb"/>
-                                    <constraint firstAttribute="width" constant="110" id="a2g-om-Wyw"/>
-                                </constraints>
-                                <state key="normal" title="Snap" image="snap"/>
-                                <connections>
-                                    <action selector="onSnapButtonClicked:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="pKj-9b-KkP"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FTl-GY-RTY">
-                                <rect key="frame" x="27" y="353" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.0" green="0.97680455450000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="15"/>
-                                <state key="normal" title="A">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0fn-R5-By4">
-                                <rect key="frame" x="27" y="467" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="15"/>
-                                <state key="normal" title="R">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tac-v9-anV">
-                                <rect key="frame" x="27" y="409" width="40" height="40"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="15"/>
-                                <state key="normal" title="S">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="sOJ-Tj-aUM" firstAttribute="top" secondItem="wmh-Vc-SMo" secondAttribute="bottom" constant="8" id="2DO-C9-INM"/>
-                            <constraint firstItem="sOJ-Tj-aUM" firstAttribute="leading" secondItem="R4H-Cl-ABh" secondAttribute="leadingMargin" constant="-8" id="6Ua-2H-4dk"/>
-                            <constraint firstItem="Ny2-0T-L7H" firstAttribute="leading" secondItem="R4H-Cl-ABh" secondAttribute="trailing" constant="-23" id="ERy-Dg-RaF"/>
-                            <constraint firstItem="Ny2-0T-L7H" firstAttribute="centerY" secondItem="S2G-ze-hF3" secondAttribute="centerY" constant="-10" id="EhX-VF-Znw"/>
-                            <constraint firstItem="S2G-ze-hF3" firstAttribute="centerX" secondItem="R4H-Cl-ABh" secondAttribute="centerX" constant="-0.5" id="j5r-5E-OCs"/>
-                            <constraint firstItem="S2G-ze-hF3" firstAttribute="top" secondItem="sOJ-Tj-aUM" secondAttribute="bottom" constant="37" id="nYh-tu-GEJ"/>
-                            <constraint firstItem="vAi-vF-zqI" firstAttribute="centerX" secondItem="R4H-Cl-ABh" secondAttribute="centerX" id="oLg-de-6zE"/>
-                            <constraint firstItem="vAi-vF-zqI" firstAttribute="top" secondItem="S2G-ze-hF3" secondAttribute="bottom" constant="8" id="r41-ez-pFj"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="sOJ-Tj-aUM" secondAttribute="trailing" constant="-8" id="vp5-Db-IIU"/>
-                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="LHe-Gj-zGH"/>
@@ -1252,7 +1201,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kXW-BY-5E5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4489" y="1506"/>
+            <point key="canvasLocation" x="4488.8000000000002" y="1505.3973013493255"/>
         </scene>
         <!--LOG-->
         <scene sceneID="VlD-Ks-r1r">
@@ -1466,66 +1415,64 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" restorationIdentifier="fpvView" translatesAutoresizingMaskIntoConstraints="NO" id="hkL-5j-iIb" userLabel="fpvView" customClass="FPVView" customModule="Skyfie_on_Spark" customModuleProvider="target">
+                            <view contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="fpvView" translatesAutoresizingMaskIntoConstraints="NO" id="hkL-5j-iIb" userLabel="fpvView" customClass="FPVView" customModule="Skyfie_on_Spark" customModuleProvider="target">
                                 <rect key="frame" x="7.5" y="7.5" width="360" height="270"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZY-l0-WR8">
-                                        <rect key="frame" x="286" y="56" width="65" height="146"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="right" image="arrow-right"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="q5m-7U-Thb"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="7GK-jp-KAo"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H0P-K5-fi1">
-                                        <rect key="frame" x="8" y="56" width="65" height="147"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="left" image="arrow-left"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="GWX-3B-cAs"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="iKi-Cb-fWB"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ED6-Hg-CvO">
-                                        <rect key="frame" x="8" y="0.0" width="343" height="48"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="up" image="arrow-up"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="OIq-MC-icI"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="Qk0-s5-5NR"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nSe-tT-lfW">
-                                        <rect key="frame" x="9" y="210" width="343" height="60"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="1"/>
-                                        <state key="normal" title="down" image="arrow-down"/>
-                                        <connections>
-                                            <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="fAk-87-IqR"/>
-                                            <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="T7S-GM-Rag"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="270" id="YKm-vE-QW4"/>
-                                    <constraint firstAttribute="width" secondItem="hkL-5j-iIb" secondAttribute="height" multiplier="4:3" id="Z5b-9J-luM"/>
-                                    <constraint firstAttribute="width" constant="360" id="qpW-eY-z0h"/>
-                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N2p-JZ-bFN" userLabel="Render View" customClass="TrackingRenderView" customModule="Skyfie_on_Spark" customModuleProvider="target">
                                 <rect key="frame" x="8" y="8" width="359" height="288"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZY-l0-WR8">
+                                <rect key="frame" x="294" y="70" width="65" height="146"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="right" image="arrow-right"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="q5m-7U-Thb"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="7GK-jp-KAo"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpOutside" id="VzF-Yr-TnY"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H0P-K5-fi1">
+                                <rect key="frame" x="16" y="70" width="65" height="147"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="left" image="arrow-left"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="FLn-hY-aZ5"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpOutside" id="dfN-kf-km5"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="oZz-85-lEo"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ED6-Hg-CvO">
+                                <rect key="frame" x="16" y="8" width="343" height="48"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="up" image="arrow-up"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="OIq-MC-icI"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="Qk0-s5-5NR"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpOutside" id="doY-LL-NJQ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nSe-tT-lfW">
+                                <rect key="frame" x="16" y="224" width="343" height="51"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="0.083764304577464782" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="1"/>
+                                <state key="normal" title="down" image="arrow-down"/>
+                                <connections>
+                                    <action selector="onTuningButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="fAk-87-IqR"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpOutside" id="P3B-BI-dNI"/>
+                                    <action selector="onTuningButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="T7S-GM-Rag"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pg5-Hh-xhZ">
                                 <rect key="frame" x="8" y="555" width="65" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -1535,12 +1482,9 @@
                                     <action selector="onTakeoffLandingButtonClicked:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="RYv-7M-BEQ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="viY-ng-SWl" userLabel="GoStop">
-                                <rect key="frame" x="127" y="375" width="120" height="101"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="101" id="2JK-KM-3UP"/>
-                                    <constraint firstAttribute="width" constant="120" id="g0g-0u-7KX"/>
-                                </constraints>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="viY-ng-SWl" userLabel="GoStop">
+                                <rect key="frame" x="123" y="375" width="128" height="101"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="30"/>
                                 <state key="normal" title="GO" backgroundImage="stick_base">
                                     <color key="titleColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1558,12 +1502,9 @@
                                     <action selector="showLogView:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="ArV-gX-yuH"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BdS-59-0jK">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BdS-59-0jK">
                                 <rect key="frame" x="132" y="485" width="110" height="110"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="110" id="IlH-Bq-yOb"/>
-                                    <constraint firstAttribute="height" constant="110" id="iEc-qP-XcY"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Snap" image="snap"/>
                                 <connections>
                                     <action selector="onSnapButtonClicked:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="dh5-jf-RVj"/>
@@ -1741,23 +1682,29 @@
                                         <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Altitude : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2j-a8-obo">
+                                        <rect key="frame" x="16" y="257" width="73" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="n9h-QR-SLX">
                                         <rect key="frame" x="0.0" y="295" width="377" height="252"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </mapView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Altitude : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0qi-9m-Rqc">
+                                        <rect key="frame" x="97" y="256" width="73" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="viY-ng-SWl" firstAttribute="top" secondItem="hkL-5j-iIb" secondAttribute="bottom" constant="97.5" id="2q5-9R-Nqn"/>
-                            <constraint firstItem="hkL-5j-iIb" firstAttribute="centerX" secondItem="JO6-eg-mko" secondAttribute="centerX" id="582-bM-IEl"/>
-                            <constraint firstItem="BdS-59-0jK" firstAttribute="top" secondItem="viY-ng-SWl" secondAttribute="bottom" constant="8.5" id="BFP-FC-vqp"/>
-                            <constraint firstItem="viY-ng-SWl" firstAttribute="centerX" secondItem="JO6-eg-mko" secondAttribute="centerX" constant="-0.5" id="WFO-Sd-AvY"/>
-                            <constraint firstItem="BdS-59-0jK" firstAttribute="centerX" secondItem="JO6-eg-mko" secondAttribute="centerX" id="cKh-kf-laL"/>
-                            <constraint firstItem="hkL-5j-iIb" firstAttribute="top" secondItem="JO6-eg-mko" secondAttribute="top" constant="7.5" id="dfe-Og-3RF"/>
-                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="N2p-JZ-bFN"/>
