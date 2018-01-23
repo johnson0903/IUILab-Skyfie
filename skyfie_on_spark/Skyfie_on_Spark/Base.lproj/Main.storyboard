@@ -1682,8 +1682,8 @@
                                         <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Altitude : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2j-a8-obo">
-                                        <rect key="frame" x="16" y="257" width="73" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Gimbal pitch : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2j-a8-obo">
+                                        <rect key="frame" x="16" y="257" width="110" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -1693,11 +1693,11 @@
                                         <rect key="frame" x="0.0" y="295" width="377" height="252"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </mapView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Altitude : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0qi-9m-Rqc">
-                                        <rect key="frame" x="97" y="256" width="73" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="(gimbal pitch)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0qi-9m-Rqc">
+                                        <rect key="frame" x="142" y="256" width="225" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -1726,6 +1726,7 @@
                         <outlet property="downButton" destination="nSe-tT-lfW" id="tme-VA-KfS"/>
                         <outlet property="fpvView" destination="hkL-5j-iIb" id="muM-76-4Ic"/>
                         <outlet property="lb_aircraftLocation" destination="F57-12-JY0" id="ywZ-nV-ggN"/>
+                        <outlet property="lb_gimbalPitch" destination="0qi-9m-Rqc" id="bGc-at-jzP"/>
                         <outlet property="lb_gpsSignalLevel" destination="49r-tM-eKq" id="Wfz-u9-w0b"/>
                         <outlet property="lb_phoneHeading" destination="fO0-Yv-OpT" id="NiI-AT-X2B"/>
                         <outlet property="lb_phonePitch" destination="Qto-bE-cpN" id="wC4-sQ-rcd"/>

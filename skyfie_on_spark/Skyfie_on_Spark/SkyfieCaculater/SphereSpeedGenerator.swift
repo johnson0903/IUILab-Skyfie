@@ -188,7 +188,6 @@ class SphereSpeedGenerator{
 //
 //        }
         
-        // 目前在校正機頭有問題
         accumVerticalAngle = expectElevationByMutiple(aircraftLocation: aircraftLocation, altitude: aircraftAltitude)
         print("accumVerticalAngle: \(radToDegree(radVal: accumVerticalAngle))")
         if accumVerticalAngle > Double.pi {
@@ -200,34 +199,35 @@ class SphereSpeedGenerator{
         if isWrongHead(aircraftLocation: aircraftLocation, aircraftHeading: aircraftHeading){
             fineResult["rotate"] = toNormalAngle(radToDegree(radVal: expectHeading(aircraftLocation: aircraftLocation)))
             fineResult["angle"] = 1
-        }
-        if up {
-            print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
-            if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
-                fineResult = ["up": angularVelocity * Float(cos(singleVelocityTrans)), "forward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
+        } else {
+            if up {
+                print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
+                if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
+                    fineResult = ["up": angularVelocity * Float(cos(singleVelocityTrans)), "forward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
+                }
+                else {
+                    accumVerticalAngle = Double.pi/2
+                    fineResult =  ["up": 0, "forward": 0, "angle": 0]
+                }
+                if accumVerticalAngle < Double.pi/2 {
+                    accumVerticalAngle += singleElevationRotate
+                }
             }
             else {
-                accumVerticalAngle = Double.pi/2
-                fineResult =  ["up": 0, "forward": 0, "angle": 0]
-            }
-            if accumVerticalAngle < Double.pi/2 {
-                accumVerticalAngle += singleElevationRotate
-            }
-        }
-        else {
-            print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
-            if accumVerticalAngle <= Double.pi/2 && accumVerticalAngle > 0 {
-                fineResult =  ["down": angularVelocity * Float(cos(singleVelocityTrans)), "backward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
-            }
-            // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
-            else {
-                fineResult =  ["down": 0, "backward": 0, "angle": 0]
-            }
-            if accumVerticalAngle > 0 {
-                accumVerticalAngle -= singleElevationRotate
+                print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
+                if accumVerticalAngle <= Double.pi/2 && accumVerticalAngle > 0 {
+                    fineResult =  ["down": angularVelocity * Float(cos(singleVelocityTrans)), "backward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
+                }
+                    // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
+                else {
+                    fineResult =  ["down": 0, "backward": 0, "angle": 0]
+                }
+                if accumVerticalAngle > 0 {
+                    accumVerticalAngle -= singleElevationRotate
+                }
             }
         }
-        //////
+        
         return fineResult
     }
     

@@ -63,6 +63,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var lb_roll: UILabel!
     @IBOutlet weak var lb_pitch: UILabel!
     @IBOutlet weak var lb_yaw: UILabel!
+    @IBOutlet weak var lb_gimbalPitch: UILabel!
     
     @IBOutlet var btn_GoStop: UIButton!
     @IBOutlet var btn_FineTuning: UIButton!
@@ -99,7 +100,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
                 lb_roll.text = "\(String(describing: skyfieController?.currentFCState?.attitude.roll))"
                 lb_pitch.text = "\(String(describing: skyfieController?.currentFCState?.attitude.pitch))"
                 lb_yaw.text = "\(String(describing: skyfieController?.currentFCState?.attitude.yaw))"
-                
+                lb_gimbalPitch.text = String(format: "%.3f", (skyfieController?.currentGimbalState?.attitudeInDegrees.pitch)!)
             } else {
                 lb_gpsSignalLevel.text = "No Aircraft connected"
                 lb_aircraftLocation.text = "Aircraft location invalid"
