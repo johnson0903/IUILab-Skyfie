@@ -73,6 +73,10 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var downButton: UIButton!
     @IBOutlet weak var leftButton: UIButton!
     @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var zoomInButton: UIButton!
+    @IBOutlet weak var zoomOutButton: UIButton!
+    @IBOutlet weak var moveNearButton: UIButton!
+    @IBOutlet weak var moveFarButton: UIButton!
     
     //MARK - Tracking variables
     @IBOutlet weak var renderView: TrackingRenderView!
@@ -135,10 +139,11 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         skyfieController?.stopFineTuningControlTimer()
         skyfieController?.stopAndHover()
         skyfieController?.startRadiusUpdateTimerWith(flightMode: .spherical)
+        skyfieController?.recoverUI()
     }
 
     @IBAction func onTuningButtonTouchDown(_ sender: UIButton) {
-        skyfieController?.pressedFinetuningButtonCount += 1
+    
         switch sender.currentTitle! {
         case "up":
             self.finetuningFor(.Up)
@@ -176,7 +181,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         }
         
         if (skyfieController?.pressedFinetuningButtonCount)! == 0 {
-            //self.fineTuningEnd()
             self.newFineTuningEnd()
         }
     }
@@ -251,6 +255,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             skyfieController = SkyfieController(aircraft: aircraft!)
             //skyfieController?.initWith(aircraft: aircraft!)
             skyfieController?.delegate = self
+            // set delegate
+//            aircraft?.flightController?.delegate = skyfieController
+//            aircraft?.gimbal?.delegate = skyfieController
         }
         
         // fineTuningView Setup
@@ -263,7 +270,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         // Ask authorisation for use in foreground from user
         // Start update userLocation and phoneHeading
         if CLLocationManager.locationServicesEnabled() {
-            
             
             self.locationManager.delegate = self
             self.locationManager.requestWhenInUseAuthorization()
@@ -281,6 +287,21 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         startUpdatePitchAngle()
         
         mapView.showsUserLocation = true
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: .updateUI, object: nil)
+    }
+    
+    // 更新控制按鈕的狀態
+    @objc func updateUI() {
+        btn_GoStop.isEnabled = (skyfieController?.isGoStopButtonEnable)!
+        zoomInButton.isEnabled = (skyfieController?.isZoomButtonEnable)!
+        zoomOutButton.isEnabled = (skyfieController?.isZoomButtonEnable)!
+        moveNearButton.isEnabled = (skyfieController?.isNearFarButtonEnable)!
+        moveFarButton.isEnabled = (skyfieController?.isNearFarButtonEnable)!
+        upButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
+        downButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
+        leftButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
+        rightButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
     }
     
     func startUpdatePitchAngle() {
@@ -313,10 +334,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             // fpvPreviewer Setup
             setVideoPreview()
             
-            // set delegate
-            aircraft?.flightController?.delegate = skyfieController
-            aircraft?.gimbal?.delegate = skyfieController
-            
             // disable the shoot photo button by default
             self.btn_Snap.isEnabled = false
             
@@ -333,9 +350,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 //                        // start to check the pre-condition
 //                        self?.setCameraMode()
 //                    }
-                    else if mode == DJICameraMode.shootPhoto {
-                        self?.isInShootPhotoMode = true
-                    }
+//                    else if mode == DJICameraMode.shootPhoto {
+//                        self?.isInShootPhotoMode = true
+//                    }
                     else {
                         self?.setCameraMode()
                     }
@@ -653,79 +670,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     
     func finetuningFor(_ direction: FineTuningDirection) {
         clearCtrlData()
-//        var flightInfo: Dictionary<String, Any> = [:]
-//        let userHeading = Double(phoneHeading!)
-        
-        switch direction {
-        case .Left:
-//            flightInfo = ["mode": FlightMode.gimbal, "heading": userHeading, "direction": "left"]
-//            skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
-            skyfieController?.newFineTuneHorizontalMove(direction: .Left)
-        case .Right:
-//            flightInfo = ["mode": FlightMode.gimbal, "heading": userHeading, "direction": "right"]
-//            skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
-            skyfieController?.newFineTuneHorizontalMove(direction: .Right)
-        case .Up:
-//            flightInfo = ["mode": FlightMode.gimbal, "moveUp": true]
-//            skyfieController?.startTimerForVerticalMoveWith(flightInfo)
-            skyfieController?.newFineTuneVerticalMove(direction: .Up)
-        case .Down:
-//            flightInfo = ["mode": FlightMode.gimbal, "moveUp": false]
-//            skyfieController?.startTimerForVerticalMoveWith(flightInfo)
-            skyfieController?.newFineTuneVerticalMove(direction: .Down)
-        }
+        skyfieController?.newFineTuneMove(direction: direction)
     }
-//    func fineTuningFor(_ direction: String) {
-//
-//        clearCtrlData()
-//        var flightInfo: Dictionary<String, Any> = [:]
-//
-////        if flag_isSphericalModeEnable == true {
-////            skyfieController?.updateSphereGenerator()
-////
-////            if direction == "Up" || direction == "Down" {
-////                // keep calling verticalTrans method with 10 Hz frequency
-////                if direction == "Up" {
-////                    flightInfo = ["mode": .spherical, "moveUp": true]
-////                }
-////                else { // Down
-////                    flightInfo = ["mode": .spherical, "moveUp": false]
-////                }
-////                skyfieController?.startTimerForVerticalMoveWith(flightInfo)
-////            }
-////            else {
-////                if direction == "Left" {
-////                    flightInfo = ["mode": .spherical, "moveRight": false]
-////                }
-////                else { // Right
-////                    flightInfo = ["mode": .spherical, "moveRight": true]
-////                }
-////                skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
-////            }
-////        }
-////        else { // Cartesian
-//            let userHeading = Double(phoneHeading!)
-//
-//            if direction == "Up" || direction == "Down" {
-//                if direction == "Up" {
-//                    flightInfo = ["mode": "gimbal", "moveUp": true]
-//                }
-//                if direction == "Down" {
-//                    flightInfo = ["mode": "gimbal", "moveUp": false]
-//                }
-//                skyfieController?.startTimerForVerticalMoveWith(flightInfo)
-//            }
-//            else {
-//                if direction == "Left" {
-//                    flightInfo = ["mode": "cartesian", "heading": userHeading, "direction": "left"]
-//                }
-//                if direction == "Right" {
-//                    flightInfo = ["mode": "cartesian", "heading": userHeading, "direction": "right"]
-//                }
-//                skyfieController?.startTimerForHorizontalMoveWith(flightInfo)
-//            }
-////        }
-//    }
     
     func fineTuningEnd() {
         // stop the aircraft
@@ -739,6 +685,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         skyfieController?.stopNewFineTuningTimer()
         skyfieController?.newFineTuneStopAndHover()
         skyfieController?.startRadiusUpdateTimerWith(flightMode: .spherical)
+        skyfieController?.recoverUI()
     }
     
     func shouldControlModeChange(to mode: FlightMode) {
@@ -937,4 +884,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             }
         }
     }
+}
+
+extension Notification.Name {
+    static let updateUI = Notification.Name("updateUI")
 }

@@ -78,6 +78,12 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     // New finetuning
     private var fineTuningCtrlData = DJIVirtualStickFlightControlData()
     
+    // UI buttons state variables
+    var isGoStopButtonEnable = true
+    var isNearFarButtonEnable = true
+    var isZoomButtonEnable = true
+    var isFramingButtonEnable = true
+    
     init(aircraft: DJIAircraft) {
         self.aircraft = aircraft
         // Set aircraft flight Control parameters
@@ -360,6 +366,11 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             self.previousDestAltitude = directPointingDestAltitude
             startDirectPointingTimer(flightInfo: flightInfo)
             
+            // notify UI change
+            isNearFarButtonEnable = false
+            isZoomButtonEnable = false
+            isFramingButtonEnable = false
+            NotificationCenter.default.post(name: .updateUI, object: nil)
         }
         else { //aircraftLocation is invalid
             self.delegate?.showAlertResultOnView("Current Drone Location Invalid")
@@ -439,6 +450,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             stopAndHover()
             updateSphereGenerator()
             startTimerForHeadingCalibration()
+            
         }
     }
     
@@ -825,6 +837,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 stopFineTuningControlTimer()
                 stopAndHover()
                 self.delegate?.didAircraftHeadingCalibrated()
+                recoverUI()
             }
         }
     }
@@ -868,7 +881,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
     }
-    
+
     func startTimerForNearFarMoveWith(_ flightInfo: Dictionary<String, Any>) {
         // resolve flight infomation
         let flightMode = flightInfo["mode"] as! FlightMode
@@ -910,7 +923,13 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             hoverLocation = kCLLocationCoordinate2DInvalid
             print("fineTuningControlTimer restart")
             fineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkAndPerformNearFarMove), userInfo: flightInfo, repeats: true)
-            fineTuningControlTimer?.fire()            
+            fineTuningControlTimer?.fire()
+            
+            // post notifaction
+            isFramingButtonEnable = false
+            isGoStopButtonEnable = false
+            isNearFarButtonEnable = false
+            NotificationCenter.default.post(name: .updateUI, object: nil)
         }
         
 //        if flightMode == .spherical {
@@ -1232,6 +1251,55 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 //            updateCartesianMoveComponents(byUserHeading: currentUserHeading, moveSpeed: fineTuningSpeed, andMoveDirection: moveDirection)
 //        }
     }
+    func newFineTuneMove(direction: FineTuningDirection) {
+        if pressedFinetuningButtonCount == 0 {
+            isGoStopButtonEnable = false
+            isZoomButtonEnable = false
+            isNearFarButtonEnable = false
+            NotificationCenter.default.post(name: .updateUI, object: nil)
+        }
+        
+        switch direction {
+        case .Left,
+             .Right:
+            aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
+            fineTuningCtrlData.pitch = (direction == .Left) ? Float(-1) : Float(1)
+            if newFineTuningControlTimer == nil {
+                newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
+                newFineTuningControlTimer?.fire()
+            }
+        case .Up,
+             .Down:
+            let gimbalAngle = -(currentGimbalState?.attitudeInDegrees.pitch)!
+            let gimbalAngleInRadians = (toRadian(from: Double(90 - gimbalAngle)))
+            
+            if direction == .Up {
+                if aircraftAltitude >= maxAltitude {
+                    fineTuningCtrlData.verticalThrottle = 0
+                }
+                else {
+                    fineTuningCtrlData.roll = cos(Float(gimbalAngleInRadians))
+                    fineTuningCtrlData.verticalThrottle = sin(Float(gimbalAngleInRadians))
+                }
+            }
+            else {
+                if self.aircraftAltitude <= 1.5 {
+                    fineTuningCtrlData.verticalThrottle = 0
+                }
+                else {
+                    fineTuningCtrlData.roll = -cos(Float(gimbalAngleInRadians))
+                    fineTuningCtrlData.verticalThrottle = -sin(Float(gimbalAngleInRadians))
+                }
+            }
+            
+            if newFineTuningControlTimer == nil {
+                newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformVerticalMove), userInfo: nil, repeats: true)
+                newFineTuningControlTimer?.fire()
+            }
+        }
+        
+        pressedFinetuningButtonCount += 1
+    }
     
     func newFineTuneHorizontalMove(direction: FineTuningDirection) {
         aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
@@ -1239,6 +1307,11 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         if newFineTuningControlTimer == nil {
             newFineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(newPerformHorizontalMove), userInfo: nil, repeats: true)
             newFineTuningControlTimer?.fire()
+            
+            isGoStopButtonEnable = false
+            isZoomButtonEnable = false
+            isNearFarButtonEnable = false
+            NotificationCenter.default.post(name: .updateUI, object: nil)
         }
     }
     
@@ -1420,7 +1493,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         fineTuningCtrlData.pitch = 0.0
         fineTuningCtrlData.yaw = 0.0
         fineTuningCtrlData.verticalThrottle = 0.0
-        
+        hoverLocation = aircraftLocation
         if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
             aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
         }
@@ -1572,5 +1645,13 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             let gimbalRotation = DJIGimbalRotation(pitchValue: 0, rollValue: 0, yawValue: 0, time: 1, mode: DJIGimbalRotationMode.relativeAngle)
             gimbal?.rotate(with: gimbalRotation, completion: nil)
         }
+    }
+    
+    func recoverUI(){
+        isFramingButtonEnable = true
+        isNearFarButtonEnable = true
+        isZoomButtonEnable = true
+        isGoStopButtonEnable = true
+        NotificationCenter.default.post(name: .updateUI, object: nil)
     }
 }
