@@ -25,6 +25,12 @@ protocol SkyfieControllerDelegate {
 
 class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate {
     
+    // UI buttons state variables
+    var isGoStopButtonEnable = true
+    var isNearFarButtonEnable = true
+    var isZoomButtonEnable = true
+    var isFramingButtonEnable = true
+    
     var delegate: SkyfieControllerDelegate? = nil
     var aircraft: DJIAircraft
     var currentFCState: DJIFlightControllerState? = nil
@@ -62,9 +68,10 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     private var ctrlYaw: Float = 0
     
     // Constant
-    // Maxmum and minimum altitude in meter
-    let maxAltitude: Double = 15
-    let minAltitude: Double = 1.5
+    // Maxmum and minimum varibles in meter
+    let maxAltitude = 15.0
+    let minAltitude = 1.5
+    let maxRadius = 10.0
     
     // Fine Tuning Speed (m/s)
     private var fineTuningSpeed: Float = 1.0
@@ -78,12 +85,10 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     // New finetuning
     private var fineTuningCtrlData = DJIVirtualStickFlightControlData()
     
-    // UI buttons state variables
-    var isGoStopButtonEnable = true
-    var isNearFarButtonEnable = true
-    var isZoomButtonEnable = true
-    var isFramingButtonEnable = true
+    // Near Far Move
+    private var nearFarMoveTimer: Timer? = nil
     
+    // Initiallize method
     init(aircraft: DJIAircraft) {
         self.aircraft = aircraft
         // Set aircraft flight Control parameters
@@ -882,7 +887,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         }
     }
 
-    func startTimerForNearFarMoveWith(_ flightInfo: Dictionary<String, Any>) {
+    func startTimerForZoomInOutMoveWith(_ flightInfo: Dictionary<String, Any>) {
         // resolve flight infomation
         let flightMode = flightInfo["mode"] as! FlightMode
         
@@ -922,7 +927,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             ctrlVerticalThrottle = 0
             hoverLocation = kCLLocationCoordinate2DInvalid
             print("fineTuningControlTimer restart")
-            fineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkAndPerformNearFarMove), userInfo: flightInfo, repeats: true)
+            fineTuningControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkAndPerformZoomInOutMove), userInfo: flightInfo, repeats: true)
             fineTuningControlTimer?.fire()
             
             // post notifaction
@@ -960,7 +965,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
 //        }
     }
 
-    @objc func checkAndPerformNearFarMove(_ timer: Timer) {
+    @objc func checkAndPerformZoomInOutMove(_ timer: Timer) {
         let flightInfo = timer.userInfo as! Dictionary<String, Any>
         let flightMode = flightInfo["mode"] as! FlightMode
         var ctrlData: DJIVirtualStickFlightControlData = DJIVirtualStickFlightControlData()
@@ -1084,6 +1089,91 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                     //self?.GimbalAutoTuning() // 因為現在根據gimbal角度調整遠近，所以移動遠近時不需要調整gimbal角度
                 }
             })
+        }
+    }
+    
+    func startTimerForNearFarMove(moveNear: Bool) {
+        
+        // 檢查飛機是否離中心太近
+        if findCurrentRealRadiusWith(flightMode: .spherical) < 2 {
+            self.delegate?.showAlertResultOnView("離中心太近，請將飛機遠離！")
+            return
+        }
+        if findCurrentRealRadiusWith(flightMode: .spherical) > maxRadius {
+            self.delegate?.showAlertResultOnView("超出限制距離，請機飛機拉近")
+            return
+        }
+        
+        if nearFarMoveTimer == nil {
+            nearFarMoveTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(performNearFarMove), userInfo: moveNear, repeats: true)
+        }
+    }
+    
+    @objc func performNearFarMove(_ timer: Timer) {
+        var ctrlData = DJIVirtualStickFlightControlData()
+        if !CLLocationCoordinate2DIsValid(hoverLocation) {
+            if (currentFCState?.velocityX == 0 || currentFCState?.velocityX == -0)
+                && (currentFCState?.velocityY == 0 || currentFCState?.velocityY == -0)
+                && (currentFCState?.velocityZ == 0 || currentFCState?.velocityZ == -0)
+            {
+                hoverLocation = self.aircraftLocation
+            }
+        } else {
+            updateHeadingCalibrator()
+            
+            let aircraftShouldMove: Dictionary<String, Float> = (headingCalibrator?.horizontalTrans(aircraftLocation: hoverLocation, aircraftHeading: Float(aircraftHeading), isCW: true))!
+            
+            if aircraftShouldMove["angle"] == 1 {
+                // aircraft heading should calibrate to correct heading in angle
+                aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angle
+                
+//                ctrlData.roll = 0
+//                ctrlData.pitch = 0
+//                ctrlData.verticalThrottle = 0
+//                ctrlData.yaw = aircraftShouldMove["rotate"]!
+                
+                if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
+                    aircraft.flightController!.send(ctrlData, withCompletion: nil)
+                }
+            } else {
+                var gimbalAngle: Float = 0.0
+                if currentGimbalState != nil {
+                    gimbalAngle = -(currentGimbalState?.attitudeInDegrees.pitch)!
+                }
+                else {
+                    self.delegate?.showAlertResultOnView("gimbal state  invalid")
+                    return
+                }
+                
+                let angleInRadians = (toRadian(from: Double(gimbalAngle)))
+                let moveSpeed: Float = 1.5
+                let moveNear = timer.userInfo as! Bool
+                if moveNear { // move near
+                    //                print("move near")
+                    if self.aircraftAltitude <= 1.5 {
+                        ctrlData.verticalThrottle = 0
+                    }
+                    else {
+                        ctrlData.roll = cos(Float(angleInRadians)) * moveSpeed
+                        //                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
+                        ctrlData.verticalThrottle = -sin(Float(angleInRadians)) * moveSpeed
+                        //                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
+                    }
+                }
+                else { //move far
+                    //                print("move far")
+                    if aircraftAltitude >= 20 {
+                        ctrlData.verticalThrottle = 0
+                        self.delegate?.showAlertResultOnView("Can't Move far anymore")
+                    }
+                    else {
+                        ctrlData.roll = -cos(Float(angleInRadians)) * moveSpeed
+                        //                    print("moveNear ctrlData.roll: \(ctrlData.roll)")
+                        ctrlData.verticalThrottle = sin(Float(angleInRadians)) * moveSpeed
+                        //                    print("moveNear ctrlData.verticalThrottle: \(ctrlData.verticalThrottle)")
+                    }
+                }
+            }
         }
     }
     
@@ -1496,6 +1586,13 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         hoverLocation = aircraftLocation
         if ((aircraft != nil && aircraft.flightController != nil) && (aircraft.flightController!.isVirtualStickControlModeAvailable())) {
             aircraft.flightController!.send(fineTuningCtrlData, withCompletion: nil)
+        }
+    }
+    
+    func stopNearFarMoveTimer() {
+        if nearFarMoveTimer != nil {
+            nearFarMoveTimer?.invalidate()
+            nearFarMoveTimer = nil
         }
     }
     

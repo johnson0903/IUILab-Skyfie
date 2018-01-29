@@ -1044,8 +1044,8 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
                                 <state key="normal" title="+" backgroundImage="stick_base"/>
                                 <connections>
-                                    <action selector="onNearButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="kRh-va-H7S"/>
-                                    <action selector="onNearFarButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="EUW-xp-zhn"/>
+                                    <action selector="onZoomButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="EUW-xp-zhn"/>
+                                    <action selector="onZoomInButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="kRh-va-H7S"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Utw-0E-lro">
@@ -1054,8 +1054,8 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
                                 <state key="normal" title="-" backgroundImage="stick_base"/>
                                 <connections>
-                                    <action selector="onFarButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="cn4-LL-vZu"/>
-                                    <action selector="onNearFarButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="y99-8t-cGl"/>
+                                    <action selector="onZoomButtonTouchUp:" destination="7yR-NQ-MQ1" eventType="touchUpInside" id="y99-8t-cGl"/>
+                                    <action selector="onZoomOutButtonTouchDown:" destination="7yR-NQ-MQ1" eventType="touchDown" id="cn4-LL-vZu"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S2G-ze-hF3" userLabel="GoStop">
@@ -1517,8 +1517,8 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
                                 <state key="normal" title="+" backgroundImage="stick_base"/>
                                 <connections>
-                                    <action selector="onNearButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="SLQ-UJ-JGJ"/>
-                                    <action selector="onNearFarButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="Ddg-SI-G6g"/>
+                                    <action selector="onZoomButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="Ddg-SI-G6g"/>
+                                    <action selector="onZoomInButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="SLQ-UJ-JGJ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pgm-Kt-XUL">
@@ -1527,8 +1527,8 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
                                 <state key="normal" title="-" backgroundImage="stick_base"/>
                                 <connections>
-                                    <action selector="onFarButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="Z8i-Dn-jVw"/>
-                                    <action selector="onNearFarButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="pSm-7E-gh1"/>
+                                    <action selector="onZoomButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="pSm-7E-gh1"/>
+                                    <action selector="onZoomOutButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="Z8i-Dn-jVw"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fz2-KT-YlI">
@@ -1682,12 +1682,20 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <state key="normal" title="Near" backgroundImage="stick_base"/>
+                                <connections>
+                                    <action selector="onMoveNearButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="Yv7-HG-mJA"/>
+                                    <action selector="onNearFarButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="Jcq-95-UXg"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yo1-jl-H0Y">
                                 <rect key="frame" x="21" y="442" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <state key="normal" title="Far" backgroundImage="stick_base"/>
+                                <connections>
+                                    <action selector="onMoveFarButtonTouchDown:" destination="bcZ-iD-cU1" eventType="touchDown" id="AoU-EH-k6Z"/>
+                                    <action selector="onNearFarButtonTouchUp:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="5zt-He-z83"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

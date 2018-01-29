@@ -116,25 +116,24 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         skyfieController?.setCenterToAircraftLocation()
     }
     
-    @IBAction func onNearButtonTouchDown(_ sender: UIButton) {
-        if skyfieController?.pressedFinetuningButtonCount == 0 {
-            let moveSpeed: Float = 1.5
-            var flightInfo: Dictionary<String, Any> = [:]
-            flightInfo = ["mode": FlightMode.gimbal, "moveNear": true, "speed": moveSpeed]
-            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
-        }
+    @IBAction func onZoomInButtonTouchDown(_ sender: UIButton) {
+        
+        let moveSpeed: Float = 1.5
+        var flightInfo: Dictionary<String, Any> = [:]
+        flightInfo = ["mode": FlightMode.gimbal, "moveNear": true, "speed": moveSpeed]
+        skyfieController?.startTimerForZoomInOutMoveWith(flightInfo)
+     
     }
     
-    @IBAction func onFarButtonTouchDown(_ sender: UIButton) {
-        if skyfieController?.pressedFinetuningButtonCount == 0 {
-            let moveSpeed: Float = 1.5
-            var flightInfo: Dictionary<String, Any> = [:]
-            flightInfo = ["mode": FlightMode.gimbal, "moveNear": false, "speed": moveSpeed]
-            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
-        }
+    @IBAction func onZoomOutButtonTouchDown(_ sender: UIButton) {
+        
+        let moveSpeed: Float = 1.5
+        var flightInfo: Dictionary<String, Any> = [:]
+        flightInfo = ["mode": FlightMode.gimbal, "moveNear": false, "speed": moveSpeed]
+        skyfieController?.startTimerForZoomInOutMoveWith(flightInfo)
     }
     
-    @IBAction func onNearFarButtonTouchUp(_ sender: UIButton) {
+    @IBAction func onZoomButtonTouchUp(_ sender: UIButton) {
         // stop the aircraft and motion getting
         skyfieController?.stopFineTuningControlTimer()
         skyfieController?.stopAndHover()
@@ -142,6 +141,18 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         skyfieController?.recoverUI()
     }
 
+    @IBAction func onMoveNearButtonTouchDown(_ sender: UIButton) {
+        skyfieController?.startTimerForNearFarMove(moveNear: true)
+    }
+    
+    @IBAction func onMoveFarButtonTouchDown(_ sender: UIButton) {
+        skyfieController?.startTimerForNearFarMove(moveNear: false)
+    }
+    
+    @IBAction func onNearFarButtonTouchUp(_ sender: UIButton) {
+    }
+    
+    
     @IBAction func onTuningButtonTouchDown(_ sender: UIButton) {
     
         switch sender.currentTitle! {
@@ -742,7 +753,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 //                let userHeading = Double(phoneHeading!)
 //                flightInfo = ["mode": "cartesian", "heading": userHeading, "speed": moveSpeed, "direction": "front"]
 //            }
-            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+            skyfieController?.startTimerForZoomInOutMoveWith(flightInfo)
         }
         if motionCommand!.back != 0 { // near
             let moveSpeed = getPitchControlVelocity(motionCommand!.back)
@@ -754,7 +765,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 //                let userHeading = Double(phoneHeading!)
 //                flightInfo = ["mode": "cartesian", "heading": userHeading, "speed": moveSpeed, "direction": "back"]
 //            }
-            skyfieController?.startTimerForNearFarMoveWith(flightInfo)
+            skyfieController?.startTimerForZoomInOutMoveWith(flightInfo)
         }
     }
     
