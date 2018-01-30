@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0C2914A904FA1B0E5F834A0F /* libPods-Skyfie_on_Spark.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 113C73D46D789956910465BA /* libPods-Skyfie_on_Spark.a */; };
+		0FDBD30020203DA5004116D2 /* NoGPSShpereCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FDBD2FF20203DA5004116D2 /* NoGPSShpereCalculator.swift */; };
 		2C21B9B11F624CB10078C57C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C21B9B01F624CB10078C57C /* MapKit.framework */; };
 		2C21B9B51F626D880078C57C /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C21B9B31F626D880078C57C /* Places.plist */; };
 		2C21B9B61F626D880078C57C /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C21B9B41F626D880078C57C /* Places.swift */; };
@@ -77,6 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0FDBD2FF20203DA5004116D2 /* NoGPSShpereCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoGPSShpereCalculator.swift; sourceTree = "<group>"; };
 		113C73D46D789956910465BA /* libPods-Skyfie_on_Spark.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Skyfie_on_Spark.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C21B9B01F624CB10078C57C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		2C21B9B31F626D880078C57C /* Places.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Places.plist; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				AE79C8811F2C797F00B9361F /* CircularLocationTransform.swift */,
 				AE79C8821F2C797F00B9361F /* CylinderSpeedBooster.swift */,
 				AE79C8831F2C797F00B9361F /* SphereSpeedGenerator.swift */,
+				0FDBD2FF20203DA5004116D2 /* NoGPSShpereCalculator.swift */,
 			);
 			path = SkyfieCaculater;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FDBD30020203DA5004116D2 /* NoGPSShpereCalculator.swift in Sources */,
 				AE24F97D1F2725C40071A0E6 /* DJIImageAnnotation.swift in Sources */,
 				AE79C87D1F2C797300B9361F /* FPVView.swift in Sources */,
 				AE79C87E1F2C797300B9361F /* LogViewController.swift in Sources */,

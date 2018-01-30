@@ -40,6 +40,9 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     var aircraftAltitude: Double = 5.0
     var aircraftHeading: Double = 0.0
     
+    // No GPS Direct Pointing
+    private var noGPSDirectPointingRadius = 0.0
+    private var noGPSSphereCalculator: NoGPSSphereCalculator
     // Direct Pointing Mode related varables
     private var isStartMoveVertical = false
     private var isHorizontalHoverLocationSet = false
@@ -104,7 +107,10 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         // initialize sphereTrackGenerator and headingCalibrator
         sphereTrackGenerator = SphereSpeedGenerator(radius: Float(circularLocationTransformer.radius), velocity: directPointingRotateSpeed, sphereCenter: circularLocationTransformer.center)
         headingCalibrator = CylinderSpeedBooster(radius: Float(circularLocationTransformer.radius), velocity: fineTuningSpeed, cylinderCenter: circularLocationTransformer.center)
-
+        
+        // initialize no gps sphereCalculatior
+        noGPSSphereCalculator = NoGPSSphereCalculator()
+        
         super.init()
         self.aircraft.flightController?.delegate = self
         self.aircraft.gimbal?.delegate = self
@@ -225,7 +231,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         }
         
         directPointingDestLocation = findDestinationPoint(withHeading: directPointingHeading, andElevation: userElevation)
-        directPointingDestAltitude = Float(findDestinationAltitudeBy(elevation: userElevation))
+        directPointingDestAltitude = Float(findDestinationAltitudeBy(phonePitchInRadians: userElevation))
         
         print("dest Location: " + String(describing: directPointingDestLocation))
         print("dest altitude: " + String(directPointingDestAltitude))
@@ -347,6 +353,21 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         }
     }
     
+    // MARK: - No GPS Directpointing method
+    func executeNoGPSDirectPointing(userHeading: CLLocationDirection?, userElevation: Double) {
+        self.directPointingDestAltitude = Float(findDestinationAltitudeBy(phonePitchInRadians: userElevation))
+        let shouldMoveUp = previousDestAltitude < directPointingDestAltitude ? true : false
+        let flightInfo: Dictionary<String, Any> = ["mode": FlightMode.spherical, "moveRight": shouldMoveRight(userHeading: userHeading), "userHeading": userHeading!, "moveUp": shouldMoveUp]
+        self.previousDestAltitude = directPointingDestAltitude
+        startNoGPSDirectPointingTimer(flightInfo: flightInfo)
+        
+        // notify UI change
+        isNearFarButtonEnable = false
+        isZoomButtonEnable = false
+        isFramingButtonEnable = false
+        NotificationCenter.default.post(name: .updateUI, object: nil)
+    }
+    
     func executeDirectPointing(userHeading: CLLocationDirection?, userElevation: Double) {
         if CLLocationCoordinate2DIsValid(aircraftLocation) {
             // if current radius less than 2 meter shouldn't move
@@ -365,7 +386,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 return
             }
             
-            self.directPointingDestAltitude = Float(findDestinationAltitudeBy(elevation: userElevation))
+            self.directPointingDestAltitude = Float(findDestinationAltitudeBy(phonePitchInRadians: userElevation))
             let shouldMoveUp = previousDestAltitude < directPointingDestAltitude ? true : false
             let flightInfo: Dictionary<String, Any> = ["mode": FlightMode.spherical, "moveRight": shouldMoveRight(userHeading: userHeading), "userHeading": userHeading!, "moveUp": shouldMoveUp]
             self.previousDestAltitude = directPointingDestAltitude
@@ -407,6 +428,35 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 return false
             }
         }
+    }
+    
+    // No GPS Direct Pointing Timer
+    func startNoGPSDirectPointingTimer(flightInfo: Dictionary<String, Any>) {
+        if aircraft.flightController?.isVirtualStickControlModeAvailable() == false {
+            enableVirtualStickControlMode()
+        }
+        
+        if directPointingControlTimer == nil {
+            directPointingControlTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(performNoGPSDirectPointing), userInfo: flightInfo, repeats: true)
+            self.delegate?.didDirectPointingStartWith(destLocation: directPointingDestLocation, destAltitude: directPointingDestAltitude)
+        }
+    }
+    
+    @objc func performNoGPSDirectPointing(_ timer: Timer) {
+        let flightInfo = timer.userInfo as! Dictionary<String, Any>
+        let userHeading = flightInfo["userHeading"] as! CLLocationDirection
+        let shouldMoveUp = flightInfo["moveUp"] as! Bool
+        let shouldMoveRight = flightInfo["moveRight"] as! Bool
+        
+        // 若高度還未到範圍內則調整高度
+        if (abs((currentFCState?.altitude)! - Double(directPointingDestAltitude)) > 0.4) {
+            performNoGPSVerticalMove(shouldMoveUp: shouldMoveUp)
+            return
+        }
+    }
+    
+    func performNoGPSVerticalMove(shouldMoveUp: Bool) {
+        var ctrlData = DJIVirtualStickFlightControlData()
     }
     
     // 每 0.1 秒觸發一次 "performShpereDirectPointing" function
@@ -491,7 +541,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 }
                 else { // down
                     ctrlData.roll = -aircraftShouldMove["backward"]!
-                    if aircraftAltitude > 1.5 {
+                    if aircraftAltitude > minAltitude {
                         ctrlData.verticalThrottle = -aircraftShouldMove["down"]!
                     }
                 }
@@ -499,17 +549,17 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 // it means accumAngle has reached 0 or 90 degree, check whether AC altitude is same as expected altitude.(1.5m and (circle radius)m) if not, move vertical up/down to the altitude
                 if ctrlData.roll == 0 && ctrlData.verticalThrottle == 0 {
                     if shouldMoveUp { // altitude should be same as circle radius
-                        if aircraftAltitude < circularLocationTransformer.radius + 1.5 {
+                        if aircraftAltitude < circularLocationTransformer.radius + minAltitude {
                             aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                             
-                            ctrlData.verticalThrottle = Float(circularLocationTransformer.radius) + 1.5
+                            ctrlData.verticalThrottle = Float(circularLocationTransformer.radius + minAltitude)
                         }
                     }
                     else { // down, altitude should be 1.5m
-                        if aircraftAltitude > 1.5 {
+                        if aircraftAltitude > minAltitude {
                             aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                             
-                            ctrlData.verticalThrottle = 1.5
+                            ctrlData.verticalThrottle = Float(minAltitude)
                         }
                     }
                 }
@@ -600,17 +650,17 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         return destinationPoint
     }
     
-    func findDestinationAltitudeBy(elevation: Double) -> Double {
+    func findDestinationAltitudeBy(phonePitchInRadians: Double) -> Double {
         
         // Spherical Coordinate System
         
-        //使用radius當做斜邊，elevation當作角度算出radius * sin(elevation)當作需爬升的高度
-        let oppositeLength: Double = circularLocationTransformer.radius * sin(elevation)
-        if oppositeLength + 1.5 < minAltitude {
+        //使用radius當做斜邊，phonePitchInRadians 當作角度算出 radius * sin(elevation) 當作需爬升的高度
+        let oppositeLength: Double = circularLocationTransformer.radius * sin(phonePitchInRadians)
+        if oppositeLength + minAltitude < minAltitude {
             return minAltitude
         }
         else {
-            return oppositeLength + 1.5
+            return oppositeLength + minAltitude
         }
     }
     
@@ -739,7 +789,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         switch flightMode {
         case .spherical:
             // Spherical Coordinate System
-            var oppositeLength = aircraftAltitude - 1.5
+            var oppositeLength = aircraftAltitude - minAltitude
             if oppositeLength < 0 { oppositeLength = 0 }
             let adjacentLength = getDistanceFrom(circularLocationTransformer.center, to: aircraftLocation)
             
@@ -747,7 +797,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         case .cartesian:
             return getDistanceFrom(circularLocationTransformer.center, to: aircraftLocation)
         case .gimbal:
-            var oppositeLength = aircraftAltitude - 1.5
+            var oppositeLength = aircraftAltitude - minAltitude
             if oppositeLength < 0 { oppositeLength = 0 }
             let adjacentLength = getDistanceFrom(circularLocationTransformer.center, to: aircraftLocation)
             
@@ -1035,7 +1085,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             
             if moveNear { // move near
 //                print("move near")
-                if self.aircraftAltitude <= 1.5 {
+                if self.aircraftAltitude <= minAltitude {
                     ctrlData.verticalThrottle = 0
                 }
                 else {
@@ -1150,7 +1200,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 let moveNear = timer.userInfo as! Bool
                 if moveNear { // move near
                     //                print("move near")
-                    if self.aircraftAltitude <= 1.5 {
+                    if self.aircraftAltitude <= minAltitude {
                         ctrlData.verticalThrottle = 0
                     }
                     else {
@@ -1245,17 +1295,17 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                     // it means accumAngle has reached 0 or 90 degree, check whether AC altitude is same as expected altitude.(1.5m and (circle radius)m) if not, move vertical up/down to the altitude
                     if ctrlData.roll == 0 && ctrlData.verticalThrottle == 0 {
                         if shouldMoveUp { // altitude should be same as circle radius
-                            if aircraftAltitude < circularLocationTransformer.radius + 1.5 {
+                            if aircraftAltitude < circularLocationTransformer.radius + minAltitude {
                                 aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                                 
-                                ctrlData.verticalThrottle = Float(circularLocationTransformer.radius) + 1.5
+                                ctrlData.verticalThrottle = Float(circularLocationTransformer.radius) + Float(minAltitude)
                             }
                         }
                         else { // down, altitude should be 1.5m
-                            if aircraftAltitude > 1.5 {
+                            if aircraftAltitude > minAltitude {
                                 aircraft.flightController?.verticalControlMode = DJIVirtualStickVerticalControlMode.position
                                 
-                                ctrlData.verticalThrottle = 1.5
+                                ctrlData.verticalThrottle = Float(minAltitude)
                             }
                         }
                     }
@@ -1275,7 +1325,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 }
             }
             else {
-                if self.aircraftAltitude <= 1.5 {
+                if self.aircraftAltitude <= minAltitude {
                     ctrlData.verticalThrottle = 0
                 }
                 else {
@@ -1297,7 +1347,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 }
             }
             else {
-                if self.aircraftAltitude <= 1.5 {
+                if self.aircraftAltitude <= minAltitude {
                     ctrlData.verticalThrottle = 0
                 }
                 else {
@@ -1373,7 +1423,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
                 }
             }
             else {
-                if self.aircraftAltitude <= 1.5 {
+                if self.aircraftAltitude <= minAltitude {
                     fineTuningCtrlData.verticalThrottle = 0
                 }
                 else {
@@ -1425,7 +1475,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
         }
         else {
-            if self.aircraftAltitude <= 1.5 {
+            if self.aircraftAltitude <= minAltitude {
                 fineTuningCtrlData.verticalThrottle = 0
             }
             else {

@@ -84,9 +84,10 @@ class SphereSpeedGenerator{
         }
     }
     
-    var singleVelocityTrans: Double{
+    var singleVelocityTrans: Double {
         get {
-            return self.accumVerticalAngle + Double(self.angularVelocity * self.updateRate / self.radius / 2)
+//            return self.accumVerticalAngle + Double(self.angularVelocity * self.updateRate / self.radius / 2)
+            return self.accumVerticalAngle
         }
     }
     
