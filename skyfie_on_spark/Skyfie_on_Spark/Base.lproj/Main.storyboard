@@ -1540,7 +1540,7 @@
                                     <action selector="SetCenterToAircraftLocation:" destination="bcZ-iD-cU1" eventType="touchUpInside" id="lKD-kg-PlE"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J0H-E2-g4y">
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J0H-E2-g4y">
                                 <rect key="frame" x="-1" y="0.0" width="377" height="547"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -1702,7 +1702,6 @@
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="N2p-JZ-bFN"/>
-                                <exclude reference="J0H-E2-g4y"/>
                             </mask>
                         </variation>
                     </view>

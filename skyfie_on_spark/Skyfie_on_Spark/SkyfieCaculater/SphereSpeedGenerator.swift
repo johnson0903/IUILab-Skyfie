@@ -91,7 +91,7 @@ class SphereSpeedGenerator{
         }
     }
     
-    private var accumVerticalAngle: Double{
+    var accumVerticalAngle: Double{
         get {
             return _accumVerticalAngle
         }
@@ -116,13 +116,13 @@ class SphereSpeedGenerator{
     }
     
     func horizontalTrans(aircraftLocation: CLLocationCoordinate2D, aircraftHeading: Float, altitude: Float, isCW: Bool)-> Dictionary< String , Float> {
-        if !isContinuous() {
-            accumVerticalAngle = expectElevation(altitude: altitude )
-        }
+//        if !isContinuous() {
+//            accumVerticalAngle = expectElevation(altitude: altitude )
+//        }
         return (horizontalTrack?.horizontalTrans(aircraftLocation: aircraftLocation, aircraftHeading: aircraftHeading, isCW: isCW))!
     }
     
-    func verticalTrans(aircraftLocation: CLLocationCoordinate2D, aircraftHeading: Float , aircraftAltitude: Float ,up:Bool) -> Dictionary<String, Float> {
+    func verticalTrans(aircraftHeading: Float , aircraftAltitude: Float ,up:Bool) -> Dictionary<String, Float> {
         var fineResult: Dictionary<String, Float> = ["rotate": 0, "angle": 0]
 //        if !isContinuous() {
 //            // if accumVerticalAngle is up to 90 degree last fine tune and this fine tune try to move down
@@ -189,46 +189,46 @@ class SphereSpeedGenerator{
 //
 //        }
         
-        accumVerticalAngle = expectElevationByMutiple(aircraftLocation: aircraftLocation, altitude: aircraftAltitude)
-        print("accumVerticalAngle: \(radToDegree(radVal: accumVerticalAngle))")
-        if accumVerticalAngle > Double.pi {
-            accumVerticalAngle = Double.pi
+//        accumVerticalAngle = expectElevationByMutiple(aircraftLocation: aircraftLocation, altitude: aircraftAltitude)
+        accumVerticalAngle = Double(getCurrentAircraftAngle(aircraftAltitude: aircraftAltitude))
+        if accumVerticalAngle > Double.pi/2 {
+            accumVerticalAngle = Double.pi/2
         }
         if accumVerticalAngle < 0 {
             accumVerticalAngle = 0
         }
-        if isWrongHead(aircraftLocation: aircraftLocation, aircraftHeading: aircraftHeading){
-            fineResult["rotate"] = toNormalAngle(radToDegree(radVal: expectHeading(aircraftLocation: aircraftLocation)))
-            fineResult["angle"] = 1
-        } else {
-            if up {
-                print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
-                if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
-                    fineResult = ["up": angularVelocity * Float(cos(singleVelocityTrans)), "forward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
-                }
-                else {
-                    accumVerticalAngle = Double.pi/2
-                    fineResult =  ["up": 0, "forward": 0, "angle": 0]
-                }
-                if accumVerticalAngle < Double.pi/2 {
-                    accumVerticalAngle += singleElevationRotate
-                }
+
+        if up {
+            print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
+            if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
+                fineResult = ["up": angularVelocity * Float(cos(accumVerticalAngle)), "forward": angularVelocity * Float(sin(accumVerticalAngle)), "angle": 0]
             }
             else {
-                print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
-                if accumVerticalAngle <= Double.pi/2 && accumVerticalAngle > 0 {
-                    fineResult =  ["down": angularVelocity * Float(cos(singleVelocityTrans)), "backward": angularVelocity * Float(sin(singleVelocityTrans)), "angle": 0]
-                }
-                    // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
-                else {
-                    fineResult =  ["down": 0, "backward": 0, "angle": 0]
-                }
-                if accumVerticalAngle > 0 {
-                    accumVerticalAngle -= singleElevationRotate
-                }
+                accumVerticalAngle = Double.pi/2
+                fineResult =  ["up": 0, "forward": 0, "angle": 0]
             }
+//                if accumVerticalAngle < Double.pi/2 {
+//                    accumVerticalAngle += singleElevationRotate
+//                }
         }
-        
+        else {
+            print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
+            if accumVerticalAngle < Double.pi/2 && accumVerticalAngle > 0 {
+                var down = angularVelocity * Float(cos(accumVerticalAngle))
+                if down < 0.1 {
+                    down = 1
+                }
+                fineResult =  ["down": down, "backward": angularVelocity * Float(sin(accumVerticalAngle)), "angle": 0]
+            }
+            // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
+            else {
+                fineResult =  ["down": 0, "backward": 0, "angle": 0]
+            }
+//                if accumVerticalAngle > 0 {
+//                    accumVerticalAngle -= singleElevationRotate
+//                }
+        }
+
         return fineResult
     }
     
@@ -289,7 +289,6 @@ class SphereSpeedGenerator{
     
     private func expectElevationByMutiple(aircraftLocation: CLLocationCoordinate2D, altitude: Float)-> Double{
         let distanceToCenter = distantCal(spotA: aircraftLocation, spotB: sphereCenter)
-        
 //        return (Float(distanceToCenter) < self.radius && altitude > 1.5 + self.radius / 2) ? acos(distanceToCenter / Double(self.radius)) : expectElevation(altitude: altitude)
         if Float(distanceToCenter) < self.radius && altitude > 1.5 + self.radius / 2 {
             return acos(distanceToCenter / Double(self.radius))
@@ -297,6 +296,15 @@ class SphereSpeedGenerator{
         else {
             return expectElevation(altitude: altitude)
         }
+    }
+    
+    private func getCurrentAircraftAngle(aircraftAltitude: Float) -> Float {
+        if (aircraftAltitude - 1.5) / radius < 1 {
+            return asin((aircraftAltitude - 1.5) / radius)
+        } else {
+            return asin(1) - 0.00015
+        }
+        
     }
     
     private func radToDegree(radVal:Double) -> Float{

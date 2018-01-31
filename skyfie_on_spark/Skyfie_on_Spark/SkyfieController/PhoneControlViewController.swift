@@ -554,7 +554,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             // save current heading & pitchAngle, setting up direct pointing
             directPointingHeading = phoneHeading
             directPointingPitchAngle = phonePitchAngle
-            skyfieController?.executeDirectPointing(userHeading: phoneHeading, userElevation: directPointingPitchAngle)
+            skyfieController?.executeDirectPointing(userHeading: phoneHeading, userPhonePitch: directPointingPitchAngle)
         case "Stop":
             skyfieController?.stopDirectPointing()
         default:
@@ -644,9 +644,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     }
     
     func didDirectPointingStartWith(destLocation: CLLocationCoordinate2D, destAltitude: Float) {
-//        flag_isFromDPtoFineTuning = true
-//        directPointingDestLocation = destLocation
-//        directPointingDestAltitude = destAltitude
+        flag_isFromDPtoFineTuning = true
+        directPointingDestLocation = destLocation
+        directPointingDestAltitude = destAltitude
         btn_GoStop.setTitle("Stop", for: UIControlState.normal)
     }
     

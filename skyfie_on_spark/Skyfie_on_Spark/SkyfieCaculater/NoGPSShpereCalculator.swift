@@ -10,13 +10,13 @@ import Foundation
 import DJISDK
 class NoGPSSphereCalculator {
     
-    private var radius: Double
+    private var radius: Float
     private let updateRate = 0.1 // 1 次 0.1秒
     private var currentVerticalAngle = 0.0
     private var angularVelocity = 1.0
     
-    private var singleVelocityTrans: Double {
-        return self.currentVerticalAngle + (self.angularVelocity * self.updateRate / self.radius / 2)
+    private func getCurrentVerticalAngle(aircraftAltitude: Float) -> Float {
+        return asin((aircraftAltitude - 1.5) / radius)
     }
     
     init() {
@@ -26,22 +26,26 @@ class NoGPSSphereCalculator {
     func getVerticalMovement(isMoveUp: Bool, aircraftAltitude: Float) -> DJIVirtualStickFlightControlData {
         
         var ctrlData = DJIVirtualStickFlightControlData()
-        self.currentVerticalAngle = self.getElevation(aircraftAltitude: aircraftAltitude)
+        self.currentVerticalAngle = Double(self.getCurrentVerticalAngle(aircraftAltitude: aircraftAltitude))
         
-        if isMoveUp {
+        if isMoveUp { // move up
             if self.currentVerticalAngle < (Double.pi/2) && self.currentVerticalAngle >= 0 {
-                ctrlData.verticalThrottle = Float(self.angularVelocity * cos(self.singleVelocityTrans))
-                ctrlData.roll = Float(self.angularVelocity * sin(singleVelocityTrans))
+                ctrlData.verticalThrottle = Float(self.angularVelocity * cos(self.currentVerticalAngle))
+                ctrlData.roll = Float(self.angularVelocity * sin(self.currentVerticalAngle))
             } else {
-                
+                ctrlData.verticalThrottle = 0.0
+                ctrlData.roll = 0.0
             }
-        } else {
-            
+        } else { //move down
+            if self.currentVerticalAngle < (Double.pi/2) && self.currentVerticalAngle >= 0 {
+                ctrlData.verticalThrottle = -Float(self.angularVelocity * cos(self.currentVerticalAngle))
+                ctrlData.roll = -Float(self.angularVelocity * sin(self.currentVerticalAngle))
+            } else {
+                ctrlData.verticalThrottle = 0.0
+                ctrlData.roll = 0.0
+            }
         }
         return ctrlData
     }
-    
-    private func getElevation(aircraftAltitude: Float) -> Double {
-        return asin(Double(aircraftAltitude - 1.5) / self.radius)
-    }
+
 }
