@@ -40,9 +40,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     var aircraftAltitude: Double = 5.0
     var aircraftHeading: Double = 0.0
     
-    // No GPS Direct Pointing
-    private var noGPSDirectPointingRadius = 0.0
-    private var noGPSSphereCalculator: NoGPSSphereCalculator
     // Direct Pointing Mode related varables
     private var isStartMoveVertical = false
     private var isHorizontalHoverLocationSet = false
@@ -108,9 +105,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         // initialize sphereTrackGenerator and headingCalibrator
         sphereTrackGenerator = SphereSpeedGenerator(radius: Float(circularLocationTransformer.radius), velocity: directPointingRotateSpeed, sphereCenter: circularLocationTransformer.center)
         headingCalibrator = CylinderSpeedBooster(radius: Float(circularLocationTransformer.radius), velocity: fineTuningSpeed, cylinderCenter: circularLocationTransformer.center)
-        
-        // initialize no gps sphereCalculatior
-        noGPSSphereCalculator = NoGPSSphereCalculator()
         
         super.init()
         self.aircraft.flightController?.delegate = self
@@ -354,21 +348,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
         }
     }
     
-    // MARK: - No GPS Directpointing method
-    func executeNoGPSDirectPointing(userHeading: CLLocationDirection?, userElevation: Double) {
-        self.directPointingDestAltitude = Float(findDestinationAltitudeBy(phonePitchInRadians: userElevation))
-        let shouldMoveUp = previousDestAltitude < directPointingDestAltitude ? true : false
-        let flightInfo: Dictionary<String, Any> = ["mode": FlightMode.spherical, "moveRight": shouldMoveRight(userHeading: userHeading), "userHeading": userHeading!, "moveUp": shouldMoveUp]
-        self.previousDestAltitude = directPointingDestAltitude
-        startNoGPSDirectPointingTimer(flightInfo: flightInfo)
-        
-        // notify UI change
-        isNearFarButtonEnable = false
-        isZoomButtonEnable = false
-        isFramingButtonEnable = false
-        NotificationCenter.default.post(name: .updateUI, object: nil)
-    }
-    
     func executeDirectPointing(userHeading: CLLocationDirection?, userPhonePitch: Double) {
         if CLLocationCoordinate2DIsValid(aircraftLocation) {
             // if current radius less than 2 meter shouldn't move
@@ -388,7 +367,6 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
             
             self.directPointingDestAltitude = Float(findDestinationAltitudeBy(phonePitchInRadians: userPhonePitch))
-            
             
             var targetAngle: Double
             if userPhonePitch > 75 * (.pi/180) {
@@ -581,7 +559,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
     func performVerticalMove(shouldMoveUp: Bool) {
         var ctrlData: DJIVirtualStickFlightControlData = DJIVirtualStickFlightControlData()
         
-        var aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.verticalTrans(aircraftHeading: Float(aircraftHeading), aircraftAltitude: Float(aircraftAltitude), up: shouldMoveUp))!
+        var aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.verticalTrans(aircraftHeading: Float(aircraftHeading), aircraftLocation: aircraftLocation, aircraftAltitude: Float(aircraftAltitude), up: shouldMoveUp))!
  
         aircraft.flightController?.yawControlMode = DJIVirtualStickYawControlMode.angularVelocity
     
@@ -1320,7 +1298,7 @@ class SkyfieController: NSObject, DJIFlightControllerDelegate, DJIGimbalDelegate
             }
             else { // hoverLocation have been set
                 // cheack and perform vertical movement
-                let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.verticalTrans(aircraftHeading: Float(aircraftHeading), aircraftAltitude: Float(aircraftAltitude), up: shouldMoveUp))!
+                let aircraftShouldMove: Dictionary<String, Float> = (sphereTrackGenerator?.verticalTrans(aircraftHeading: Float(aircraftHeading), aircraftLocation: aircraftLocation, aircraftAltitude: Float(aircraftAltitude), up: shouldMoveUp))!
         
                 if aircraftShouldMove["angle"] == 1 {
                     // heading should calibrate to correct heading in angle

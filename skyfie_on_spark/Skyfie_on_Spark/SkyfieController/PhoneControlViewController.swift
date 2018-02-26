@@ -562,19 +562,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         }
     }
     
-    @IBAction func onNoGPSModeGoStopButtonClicked(_ sender: UIButton) {
-        switch sender.currentTitle! {
-        case "GO":
-            skyfieController?.executeNoGPSDirectPointing(userHeading: phoneHeading, userElevation: directPointingPitchAngle)
-        case "Stop":
-            
-            //還沒改新的
-            skyfieController?.stopDirectPointing()
-        default:
-            showAlertResultOnView("Button title error!")
-        }
-    }
-    
     @IBAction func onGoStopButtonClicked(_ sender: UIButton) {
         switch btn_GoStop.currentTitle! {
         case "GO":

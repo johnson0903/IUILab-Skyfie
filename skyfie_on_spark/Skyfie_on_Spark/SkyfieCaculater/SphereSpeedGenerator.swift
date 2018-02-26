@@ -78,7 +78,8 @@ class SphereSpeedGenerator{
         }
     }
     
-    var singleElevationRotate: Double{
+    // 10Hz 頻率下，也就是每0.1秒要轉多少徑度，用來累加到accumVerticalAngle
+    var singleElevationRotate: Double {
         get {
             return Double(self.angularVelocity * self.updateRate / self.radius)
         }
@@ -122,7 +123,7 @@ class SphereSpeedGenerator{
         return (horizontalTrack?.horizontalTrans(aircraftLocation: aircraftLocation, aircraftHeading: aircraftHeading, isCW: isCW))!
     }
     
-    func verticalTrans(aircraftHeading: Float , aircraftAltitude: Float ,up:Bool) -> Dictionary<String, Float> {
+    func verticalTrans(aircraftHeading: Float , aircraftLocation: CLLocationCoordinate2D, aircraftAltitude: Float ,up:Bool) -> Dictionary<String, Float> {
         var fineResult: Dictionary<String, Float> = ["rotate": 0, "angle": 0]
 //        if !isContinuous() {
 //            // if accumVerticalAngle is up to 90 degree last fine tune and this fine tune try to move down
@@ -189,8 +190,9 @@ class SphereSpeedGenerator{
 //
 //        }
         
-//        accumVerticalAngle = expectElevationByMutiple(aircraftLocation: aircraftLocation, altitude: aircraftAltitude)
-        accumVerticalAngle = Double(getCurrentAircraftAngle(aircraftAltitude: aircraftAltitude))
+        accumVerticalAngle = expectElevationByMutiple(aircraftLocation: aircraftLocation, altitude: aircraftAltitude)
+        //accumVerticalAngle = Double(getCurrentAircraftAngle(aircraftAltitude: aircraftAltitude))
+        
         if accumVerticalAngle > Double.pi/2 {
             accumVerticalAngle = Double.pi/2
         }
@@ -207,9 +209,9 @@ class SphereSpeedGenerator{
                 accumVerticalAngle = Double.pi/2
                 fineResult =  ["up": 0, "forward": 0, "angle": 0]
             }
-//                if accumVerticalAngle < Double.pi/2 {
-//                    accumVerticalAngle += singleElevationRotate
-//                }
+                if accumVerticalAngle < Double.pi/2 {
+                    accumVerticalAngle += singleElevationRotate
+                }
         }
         else {
             print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
@@ -224,9 +226,9 @@ class SphereSpeedGenerator{
             else {
                 fineResult =  ["down": 0, "backward": 0, "angle": 0]
             }
-//                if accumVerticalAngle > 0 {
-//                    accumVerticalAngle -= singleElevationRotate
-//                }
+                if accumVerticalAngle > 0 {
+                    accumVerticalAngle -= singleElevationRotate
+                }
         }
 
         return fineResult
@@ -243,18 +245,18 @@ class SphereSpeedGenerator{
         let calPointA: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: aircraftLocation.latitude, longitude: sphereCenter.longitude)
         var realHead: Double = 0
         if aircraftLocation.latitude < sphereCenter.latitude {
-            if aircraftLocation.longitude < sphereCenter.longitude {
+            if aircraftLocation.longitude < sphereCenter.longitude { // 第三象限
                 realHead = -Double.pi - asin(-distantCal(spotA: calPointA , spotB: aircraftLocation)/distantCal(spotA: sphereCenter, spotB: aircraftLocation))
             }
-            else {
+            else { // 第四象限
                 realHead = Double.pi - asin(distantCal(spotA: calPointA , spotB: aircraftLocation)/distantCal(spotA: sphereCenter, spotB: aircraftLocation))
             }
         }
         else {
-            if aircraftLocation.longitude < sphereCenter.longitude {
+            if aircraftLocation.longitude < sphereCenter.longitude { // 第二象限
                 realHead =  asin(-distantCal(spotA: calPointA , spotB: aircraftLocation)/distantCal(spotA: sphereCenter, spotB: aircraftLocation))
             }
-            else {
+            else { // 第一象限
                 realHead = asin(distantCal(spotA: calPointA , spotB: aircraftLocation)/distantCal(spotA: sphereCenter, spotB: aircraftLocation))
             }
         }
@@ -287,6 +289,7 @@ class SphereSpeedGenerator{
         return asin(Double((altitude - 1.5 ) / self.radius))
     }
     
+    //算飛機仰角，接近上圓用水平距離計算，接近下緣用高度計算
     private func expectElevationByMutiple(aircraftLocation: CLLocationCoordinate2D, altitude: Float)-> Double{
         let distanceToCenter = distantCal(spotA: aircraftLocation, spotB: sphereCenter)
 //        return (Float(distanceToCenter) < self.radius && altitude > 1.5 + self.radius / 2) ? acos(distanceToCenter / Double(self.radius)) : expectElevation(altitude: altitude)
@@ -308,13 +311,14 @@ class SphereSpeedGenerator{
     }
     
     private func radToDegree(radVal:Double) -> Float{
-        return Float(radVal * 180 / Double.pi)
+        return Float(radVal * 180/Double.pi)
     }
     
     private func degreeToRad(degVal:Float) -> Double{
-        return Double(Double(degVal) * Double.pi / 180);
+        return Double(Double(degVal) * Double.pi/180);
     }
     
+    // 將0~360度轉換成飛機使用的 -180 ~ 0 和 0 ~ +180度之間
     private func toNormalAngle(_ angle: Float) -> Float{
         var nVal: Float = angle > 0 ? (angle + 180) : (angle - 180)
         if nVal > 180 {
