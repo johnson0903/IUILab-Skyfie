@@ -12,7 +12,7 @@ import CoreLocation
 class SphereSpeedGenerator{
     private var _updateRate: Float = 0.1 //更新週期 (1次 0.1秒, 頻率10Hz)
     private var _radius: Float = 3.0
-    private var _angularVelocity: Float = 1.0
+    private var _velocity: Float = 1.0
     private var _sphereCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     private var _accumVerticalAngle: Double = 0.0 //上下移動累積已移動的角度
     private var horizontalTrack: CylinderSpeedBooster?
@@ -40,14 +40,14 @@ class SphereSpeedGenerator{
         }
     }
     
-    var angularVelocity: Float {
+    var velocity: Float {
         get {
-            return self._angularVelocity
+            return self._velocity
         }
         set {
             if newValue > 0 {
-                self._angularVelocity = newValue
-                horizontalTrack?.velocity = self._angularVelocity
+                self._velocity = newValue
+                horizontalTrack?.velocity = self._velocity
             }
         }
     }
@@ -81,14 +81,14 @@ class SphereSpeedGenerator{
     // 10Hz 頻率下，也就是每0.1秒要轉多少徑度，用來累加到accumVerticalAngle
     var singleElevationRotate: Double {
         get {
-            return Double(self.angularVelocity * self.updateRate / self.radius)
+            return Double(self.velocity * self.updateRate / self.radius)
         }
     }
     
     var singleVelocityTrans: Double {
         get {
-//            return self.accumVerticalAngle + Double(self.angularVelocity * self.updateRate / self.radius / 2)
-            return self.accumVerticalAngle
+            return self.accumVerticalAngle + Double(self.velocity * self.updateRate / self.radius / 2)
+            //return self.accumVerticalAngle
         }
     }
     
@@ -108,10 +108,10 @@ class SphereSpeedGenerator{
             self.radius = radius
         }
         if velocity > 0 {
-            self.angularVelocity = velocity
+            self.velocity = velocity
         }
         self.sphereCenter = sphereCenter
-        self.horizontalTrack = CylinderSpeedBooster(radius: self.radius, velocity: self.angularVelocity, cylinderCenter: self.sphereCenter)
+        self.horizontalTrack = CylinderSpeedBooster(radius: self.radius, velocity: self.velocity, cylinderCenter: self.sphereCenter)
         horizontalTrack?.forSphereUsing = true
         self.horizontalChecker.center = self.sphereCenter
     }
@@ -199,36 +199,35 @@ class SphereSpeedGenerator{
         if accumVerticalAngle < 0 {
             accumVerticalAngle = 0
         }
-
         if up {
             print("up accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
             if accumVerticalAngle < Double.pi/2 && accumVerticalAngle >= 0 {
-                fineResult = ["up": angularVelocity * Float(cos(accumVerticalAngle)), "forward": angularVelocity * Float(sin(accumVerticalAngle)), "angle": 0]
+                fineResult = ["up": velocity * Float(cos(singleVelocityTrans)), "forward": velocity * Float(sin(singleVelocityTrans)), "angle": 0]
             }
             else {
                 accumVerticalAngle = Double.pi/2
                 fineResult =  ["up": 0, "forward": 0, "angle": 0]
             }
-                if accumVerticalAngle < Double.pi/2 {
-                    accumVerticalAngle += singleElevationRotate
-                }
+            if accumVerticalAngle < Double.pi/2 {
+                accumVerticalAngle += singleElevationRotate
+            }
         }
         else {
             print("down accumAngle: \(radToDegree(radVal: accumVerticalAngle))")
             if accumVerticalAngle < Double.pi/2 && accumVerticalAngle > 0 {
-                var down = angularVelocity * Float(cos(accumVerticalAngle))
+                var down = velocity * Float(cos(singleVelocityTrans))
                 if down < 0.1 {
                     down = 1
                 }
-                fineResult =  ["down": down, "backward": angularVelocity * Float(sin(accumVerticalAngle)), "angle": 0]
+                fineResult =  ["down": down, "backward": velocity * Float(sin(singleVelocityTrans)), "angle": 0]
             }
-            // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
+                // 當 accumVerticalAngle 大於 ℿ/2 或 小於 0
             else {
                 fineResult =  ["down": 0, "backward": 0, "angle": 0]
             }
-                if accumVerticalAngle > 0 {
-                    accumVerticalAngle -= singleElevationRotate
-                }
+            if accumVerticalAngle > 0 {
+                accumVerticalAngle -= singleElevationRotate
+            }
         }
 
         return fineResult
@@ -241,7 +240,7 @@ class SphereSpeedGenerator{
         return result
     }
     
-    private func expectHeading(aircraftLocation: CLLocationCoordinate2D) -> Double {
+    func expectHeading(aircraftLocation: CLLocationCoordinate2D) -> Double {
         let calPointA: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: aircraftLocation.latitude, longitude: sphereCenter.longitude)
         var realHead: Double = 0
         if aircraftLocation.latitude < sphereCenter.latitude {
@@ -318,8 +317,8 @@ class SphereSpeedGenerator{
         return Double(Double(degVal) * Double.pi/180);
     }
     
-    // 將0~360度轉換成飛機使用的 -180 ~ 0 和 0 ~ +180度之間
-    private func toNormalAngle(_ angle: Float) -> Float{
+    // 將 0~360 度轉換成飛機使用的 -180~0 和 0~+180度之間
+    func toNormalAngle(_ angle: Float) -> Float{
         var nVal: Float = angle > 0 ? (angle + 180) : (angle - 180)
         if nVal > 180 {
             nVal = nVal - 360 * round(nVal/360)

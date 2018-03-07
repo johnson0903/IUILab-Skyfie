@@ -554,7 +554,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             // save current heading & pitchAngle, setting up direct pointing
             directPointingHeading = phoneHeading
             directPointingPitchAngle = phonePitchAngle
-            skyfieController?.executeDirectPointing(userHeading: phoneHeading, userPhonePitch: directPointingPitchAngle)
+//            skyfieController?.calibrateHeading(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle, withCompletion: (skyfieController?.executeDirectPointing(userHeading:userPhonePitch:))!)
+            //skyfieController?.executeDirectPointing(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle)
+            skyfieController?.calibrateHeading(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle)
         case "Stop":
             skyfieController?.stopDirectPointing()
         default:
