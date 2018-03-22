@@ -64,6 +64,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var lb_pitch: UILabel!
     @IBOutlet weak var lb_yaw: UILabel!
     @IBOutlet weak var lb_gimbalPitch: UILabel!
+    @IBOutlet weak var lb_throttleMode: UILabel!
+    @IBOutlet weak var lb_yawControlMode: UILabel!
     
     @IBOutlet var btn_GoStop: UIButton!
     @IBOutlet var btn_FineTuning: UIButton!
@@ -105,6 +107,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
                 lb_pitch.text = "\(String(describing: skyfieController?.currentFCState?.attitude.pitch))"
                 lb_yaw.text = "\(String(describing: skyfieController?.currentFCState?.attitude.yaw))"
                 lb_gimbalPitch.text = String(format: "%.3f", (skyfieController?.currentGimbalState?.attitudeInDegrees.pitch)!)
+                lb_throttleMode.text = "\(String(describing: skyfieController?.aircraft.flightController?.verticalControlMode.rawValue))"
+                lb_yawControlMode.text = "\(String(describing: skyfieController?.aircraft.flightController?.yawControlMode.rawValue))"
             } else {
                 lb_gpsSignalLevel.text = "No Aircraft connected"
                 lb_aircraftLocation.text = "Aircraft location invalid"
@@ -554,11 +558,9 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
             // save current heading & pitchAngle, setting up direct pointing
             directPointingHeading = phoneHeading
             directPointingPitchAngle = phonePitchAngle
-//            skyfieController?.calibrateHeading(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle, withCompletion: (skyfieController?.executeDirectPointing(userHeading:userPhonePitch:))!)
-            //skyfieController?.executeDirectPointing(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle)
             skyfieController?.calibrateHeading(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle)
         case "Stop":
-            skyfieController?.stopDirectPointing()
+            skyfieController?.interruptDirectPointing()
         default:
             return
         }
@@ -644,7 +646,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     }
     
     func didDirectPointingStop() {
-        showAlertResult("Mission has been stopped")
+        //showAlertResult("Mission complete")
         btn_GoStop.setTitle("GO", for: UIControlState.normal)
     }
     

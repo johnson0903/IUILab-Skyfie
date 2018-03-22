@@ -12,7 +12,6 @@
 		2C21B9B51F626D880078C57C /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C21B9B31F626D880078C57C /* Places.plist */; };
 		2C21B9B61F626D880078C57C /* Places.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C21B9B41F626D880078C57C /* Places.swift */; };
 		2C346C231FBF514200FBA75B /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C346C221FBF514200FBA75B /* Enumerations.swift */; };
-		2C346C271FC451E000FBA75B /* FlightInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C346C261FC451E000FBA75B /* FlightInfo.swift */; };
 		2CAA935E1FB206230054154D /* TrackingRenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA935D1FB206230054154D /* TrackingRenderView.swift */; };
 		AE24F9741F2725C40071A0E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE24F9661F2725C30071A0E6 /* AppDelegate.swift */; };
 		AE24F9751F2725C40071A0E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE24F9671F2725C30071A0E6 /* Assets.xcassets */; };
@@ -82,7 +81,6 @@
 		2C21B9B31F626D880078C57C /* Places.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Places.plist; sourceTree = "<group>"; };
 		2C21B9B41F626D880078C57C /* Places.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Places.swift; sourceTree = "<group>"; };
 		2C346C221FBF514200FBA75B /* Enumerations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enumerations.swift; sourceTree = "<group>"; };
-		2C346C261FC451E000FBA75B /* FlightInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightInfo.swift; sourceTree = "<group>"; };
 		2CAA935D1FB206230054154D /* TrackingRenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingRenderView.swift; sourceTree = "<group>"; };
 		6EE9053503EAE6A87BBCF750 /* Pods-Skyfie_on_Spark.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skyfie_on_Spark.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark.debug.xcconfig"; sourceTree = "<group>"; };
 		A2A48F969E104A1FF9CA3065 /* Pods-Skyfie_on_Spark.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skyfie_on_Spark.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skyfie_on_Spark/Pods-Skyfie_on_Spark.release.xcconfig"; sourceTree = "<group>"; };
@@ -231,7 +229,6 @@
 				AE79C8741F2C797300B9361F /* PhoneControlViewController.swift */,
 				AE79C8771F2C797300B9361F /* FPVView.swift */,
 				AE79C8781F2C797300B9361F /* LogViewController.swift */,
-				2C346C261FC451E000FBA75B /* FlightInfo.swift */,
 				AE79C8791F2C797300B9361F /* SkyfieController.swift */,
 				2CAA935D1FB206230054154D /* TrackingRenderView.swift */,
 				2C346C221FBF514200FBA75B /* Enumerations.swift */,
@@ -429,7 +426,6 @@
 				AE79C8861F2C797F00B9361F /* SphereSpeedGenerator.swift in Sources */,
 				AE24F9741F2725C40071A0E6 /* AppDelegate.swift in Sources */,
 				AE24F97C1F2725C40071A0E6 /* StartupViewController.swift in Sources */,
-				2C346C271FC451E000FBA75B /* FlightInfo.swift in Sources */,
 				2C346C231FBF514200FBA75B /* Enumerations.swift in Sources */,
 				AE79C8841F2C797F00B9361F /* CircularLocationTransform.swift in Sources */,
 				AE24F97B1F2725C40071A0E6 /* SparkTestingViewController.swift in Sources */,
