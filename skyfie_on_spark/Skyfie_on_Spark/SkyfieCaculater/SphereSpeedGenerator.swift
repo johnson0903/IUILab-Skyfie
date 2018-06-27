@@ -11,7 +11,7 @@ import CoreLocation
 
 class SphereSpeedGenerator{
     private var _updateRate: Float = 0.1 //更新週期 (1次 0.1秒, 頻率10Hz)
-    private var _radius: Float = 3.0
+    private var _radius: Float = 4.0
     private var _velocity: Float = 1.0
     private var _sphereCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     private var _accumVerticalAngle: Double = 0.0 //上下移動累積已移動的角度
@@ -88,8 +88,7 @@ class SphereSpeedGenerator{
     //實際的那個角度
     var singleVelocityTrans: Double {
         get {
-            return self.accumVerticalAngle + Double(self.velocity * self.updateRate / self.radius / 2)
-            //return self.accumVerticalAngle
+            return self.accumVerticalAngle + Double(self.velocity * self.updateRate / (2 * self.radius))
         }
     }
     
@@ -248,6 +247,7 @@ class SphereSpeedGenerator{
         return result
     }
     
+    // 用圓心和飛機現在位置算出飛機應該面對中心的角度
     func expectHeading(aircraftLocation: CLLocationCoordinate2D) -> Double {
         let calPointA: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: aircraftLocation.latitude, longitude: sphereCenter.longitude)
         var realHead: Double = 0
@@ -292,7 +292,7 @@ class SphereSpeedGenerator{
         return tempLocationA.distance(from: tempLocationB)
     }
     
-    private func expectElevation(altitude: Float)-> Double{
+    func expectElevation(altitude: Float)-> Double{
         return asin(Double((altitude - 1.5 ) / self.radius))
     }
     

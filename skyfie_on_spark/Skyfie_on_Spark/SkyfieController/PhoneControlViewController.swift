@@ -66,6 +66,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var lb_gimbalPitch: UILabel!
     @IBOutlet weak var lb_throttleMode: UILabel!
     @IBOutlet weak var lb_yawControlMode: UILabel!
+    @IBOutlet weak var lb_status: UILabel!
     
     @IBOutlet var btn_GoStop: UIButton!
     @IBOutlet var btn_FineTuning: UIButton!
@@ -79,6 +80,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var zoomOutButton: UIButton!
     @IBOutlet weak var moveNearButton: UIButton!
     @IBOutlet weak var moveFarButton: UIButton!
+    @IBOutlet weak var maskView: UIView!
     
     //MARK - Tracking variables
     @IBOutlet weak var renderView: TrackingRenderView!
@@ -193,10 +195,11 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         if (skyfieController?.pressedFinetuningButtonCount)! > 0 {
             skyfieController?.stopFineTuningFor(direction: direction)
             skyfieController?.pressedFinetuningButtonCount -= 1
-        }
-        
-        if (skyfieController?.pressedFinetuningButtonCount)! == 0 {
-            self.newFineTuningEnd()
+            
+            // 當所有finetuning按鈕都放開時
+            if (skyfieController?.pressedFinetuningButtonCount)! == 0 {
+                self.newFineTuningEnd()
+            }
         }
     }
 
@@ -263,7 +266,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        maskView.isHidden = true
         self.aircraft = DJISDKManager.product() as? DJIAircraft
         if aircraft != nil {
             // setup skyfieController
@@ -317,6 +320,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         downButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
         leftButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
         rightButton.isEnabled = (skyfieController?.isFramingButtonEnable)!
+        lb_status.text = skyfieController?.status
     }
     
     func startUpdatePitchAngle() {
@@ -517,6 +521,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
                     })
                 }
             })
+            camera?.setPhotoAspectRatio(.ratio4_3, withCompletion: nil)
         }
     }
     
@@ -546,6 +551,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBAction func onTakeoffLandingButtonClicked(_ sender: UIButton) {
         if self.btn_TakeoffLanding.currentTitle == "Takeoff" {
             skyfieController?.aircraftTakeoff()
+            maskView.isHidden = false
         }
         else if self.btn_TakeoffLanding.currentTitle == "Landing" {
             skyfieController?.aircraftLanding()
@@ -623,6 +629,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     // MARK: - SkyfieController delegate Methods
     func didAircraftTakeoff() {
         self.btn_TakeoffLanding.setTitle("Landing", for: UIControlState.normal)
+        self.maskView.isHidden = true
     }
     
     // for takeoff without using btn_TakeoffLanding
@@ -904,3 +911,4 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 extension Notification.Name {
     static let updateUI = Notification.Name("updateUI")
 }
+

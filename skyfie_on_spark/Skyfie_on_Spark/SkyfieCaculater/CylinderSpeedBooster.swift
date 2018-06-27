@@ -11,7 +11,7 @@ import CoreLocation
 
 class CylinderSpeedBooster{
     private var _updateRate: Float = 0.1
-    private var _radius: Float = 3.0
+    private var _radius: Float = 4.0
     private var _velocity: Float = 1.0
     private var _cylinderCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     private var placeChecker: CircularLocationTransform = CircularLocationTransform()
@@ -116,43 +116,43 @@ class CylinderSpeedBooster{
         let expectHead: Double = expectHeading(aircraftLocation: initGPS!)
         let locationErr: Bool = isLocationError(aircraftLocation: initGPS!)
         var finResult: Dictionary<String, Float> = ["rotate": 0, "speed": 0, "angle": 0]
-////        if locationErr {
-////            print("Location Error: now heading to\(toNormalAngle(radTrans(radVal: expectHead)))")
-////        }
-//        if isContinuous() {
-//            if isPathRevising {
-//                if !isStartMoving {
-//                    if isWrongHead(aircraftLocation: initGPS!, aircraftHeading: aircraftHeading) {
-//                        finResult["rotate"] = toNormalAngle(radTrans(radVal: expectHead))
-//                        finResult["angle"] = 1
-//                        isPathRevising = true
-//                    }else{
-//                        isPathRevising = false
-//                    }
-//                }else{
-//                    isPathRevising = false
-//                    isStartMoving = true
-//                    finResult = isCW ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
-//                }
-//            }else{
-//                if locationErr {
-//                    print("Location Error")
-//                }
-//                isStartMoving = true
-//                finResult = isCW ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
-//            }
-//        }else{
-//            initGPS = aircraftLocation
-//            //self.radius = Float(distantCal(spotA: initGPS!, spotB: cylinderCenter))
-//            if isWrongHead(aircraftLocation: initGPS!, aircraftHeading: aircraftHeading) {
-//                finResult["rotate"] = toNormalAngle(radTrans(radVal: expectHead))
-//                finResult["angle"] = 1
-//                isPathRevising = true
-//            }else{
-//                finResult = isCW ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
-//            }
+//        if locationErr {
+//            print("Location Error: now heading to\(toNormalAngle(radTrans(radVal: expectHead)))")
 //        }
-        finResult = isClockWise ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
+        if isContinuous() {
+            if isPathRevising {
+                if !isStartMoving {
+                    if isWrongHead(aircraftLocation: initGPS!, aircraftHeading: aircraftHeading) {
+                        finResult["rotate"] = toNormalAngle(radTrans(radVal: expectHead))
+                        finResult["angle"] = 1
+                        isPathRevising = true
+                    }else{
+                        isPathRevising = false
+                    }
+                }else{
+                    isPathRevising = false
+                    isStartMoving = true
+                    finResult = isClockWise ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
+                }
+            }else{
+                if locationErr {
+                    print("Location Error")
+                }
+                isStartMoving = true
+                finResult = isClockWise ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
+            }
+        }else{
+            initGPS = aircraftLocation
+            //self.radius = Float(distantCal(spotA: initGPS!, spotB: cylinderCenter))
+            if isWrongHead(aircraftLocation: initGPS!, aircraftHeading: aircraftHeading) {
+                finResult["rotate"] = toNormalAngle(radTrans(radVal: expectHead))
+                finResult["angle"] = 1
+                isPathRevising = true
+            }else{
+                finResult = isClockWise ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
+            }
+        }
+//        finResult = isClockWise ? ["rotate": radTrans(radVal: self.rotateSpeed), "speed": self.velocity, "angle": 0] : ["rotate": -radTrans(radVal: self.rotateSpeed), "speed": -self.velocity, "angle": 0]
         return finResult
     }
     

@@ -56,7 +56,7 @@ class StartupViewController: UIViewController {
     
     
     func resetUI() {
-        self.title = "DJI iOS SDK Sample"
+        self.title = ""
         self.sdkVersionLabel.text = "DJI SDK Version: \(DJISDKManager.sdkVersion())"
         self.openComponents.isEnabled = false;
         self.productModel.isHidden = true
@@ -82,7 +82,7 @@ class StartupViewController: UIViewController {
     func productConnected() {
         guard let newProduct = DJISDKManager.product() else {
             NSLog("Product is connected but DJISDKManager.product is nil -> something is wrong")
-            return;
+            return
         }
 
         //Updates the product's model
