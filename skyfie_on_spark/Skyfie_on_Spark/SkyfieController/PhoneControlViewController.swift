@@ -14,38 +14,12 @@ import CoreMotion
 import DJISDK
 import VideoPreviewer
 
-class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICameraDelegate, CLLocationManagerDelegate, SkyfieControllerDelegate, LogViewControllerDelegate, FPVViewDelegate, TrackingRenderViewDelegate{
+class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICameraDelegate, CLLocationManagerDelegate, SkyfieControllerDelegate, LogViewControllerDelegate, FPVViewDelegate, UITextFieldDelegate{
     
-    //MARK: - TrackingRenderView Delegate method
-    func renderViewDidTouchAtPoint(point: CGPoint) {
-        if self.isTrackingMissionRunning && !self.isNeedConfirm {
-            return
-        }
-        
-        if self.isNeedConfirm {
-            let largeRect = self.currentTrackingRect?.insetBy(dx: -10, dy: -10)
-            if (largeRect?.contains(point))! {
-                self.missionOperator.acceptConfirmation(completion: {(error: Error?) -> Void in
-                    if error != nil {
-                        self.showAlertResultOnView("Set Recommended recommended camera and gimbal configuration: \(error!.localizedDescription)")
-                    }
-                })
-            }
-            else {
-                self.missionOperator.stopMission(completion: {(error: Error?) -> Void in
-                    if error != nil {
-                        self.showAlertResult("Cancel Tracking: \(error!.localizedDescription)")
-                    }
-                })
-            }
-        }
-        else {
-        }
-    }
+    // 寫log檔案
+    @IBOutlet weak var logfileNameTextfiled: UITextField!
+    var logString = ""
     
-    func renderViewDidMoveToPoint(endPoint: CGPoint, fromPoint startPoint: CGPoint, isFinished finished: Bool) {
-        
-    }
     
     private var fineTuneTimer: Timer? = nil
     
@@ -81,22 +55,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     @IBOutlet weak var moveNearButton: UIButton!
     @IBOutlet weak var moveFarButton: UIButton!
     @IBOutlet weak var maskView: UIView!
-    
-    //MARK - Tracking variables
-    @IBOutlet weak var renderView: TrackingRenderView!
-    var isNeedConfirm = false
-    var isTrackingMissionRunning = false
-    var currentTrackingRect: CGRect?
-    var missionOperator: DJIActiveTrackMissionOperator {
-        return (DJISDKManager.missionControl()?.activeTrackMissionOperator())!
-    }
-    
-//    enum FineTuningDirection {
-//        case Left
-//        case Right
-//        case Up
-//        case Down
-//    }
     
     //Log some information about aircraft
     @IBAction func showLogView(_ sender: UIButton) {
@@ -191,6 +149,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         default:
             return
         }
+        logString += nowTimestamp()
+        logString += "Touch up \(direction.rawValue) direction\n"
         // 如果還有被按著的按鈕要處理放開的方向
         if (skyfieController?.pressedFinetuningButtonCount)! > 0 {
             skyfieController?.stopFineTuningFor(direction: direction)
@@ -208,8 +168,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     var skyfieController: SkyfieController? = nil
     
     // tmp varable store the data using to perform waypoint mission
-    var directPointingHeading: CLLocationDirection? = nil
-    var directPointingPitchAngle: Double = 0.0
     var directPointingDestLocation: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     var directPointingDestAltitude: Float = 0.0
     
@@ -264,25 +222,55 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 //    var flag_isRecordingVideo: Bool = false
     // MARK:
     
+    func writeLogFile(){
+        let url = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let fileURL = url.appendingPathComponent(logfileNameTextfiled.text!).appendingPathExtension("txt")
+        
+        do{
+            try logString.write(to: fileURL, atomically: true, encoding: .utf8)
+        } catch let error as NSError {
+            print ("Failed writing to URL: \(fileURL), Error:" + error.localizedDescription)
+        }
+
+    }
+    
+    @IBAction func readFile(_ sender: Any) {
+        readLogFile()
+    }
+    @IBAction func writeFile(_ sender: Any) {
+        writeLogFile()
+    }
+    func readLogFile(){
+        let url = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let fileURL = url.appendingPathComponent(logfileNameTextfiled.text!).appendingPathExtension("txt")
+        var readStr = ""
+        do{
+            readStr = try String(contentsOf: fileURL)
+        } catch let error as NSError {
+            print ("Failed writing to URL: \(fileURL), Error:" + error.localizedDescription)
+        }
+        print(readStr)
+    }
+    
+    func nowTimestamp() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = .current
+        formatter.dateFormat = "MM-dd HH:mm:ss"
+        return formatter.string(from: now) + ", "
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        logfileNameTextfiled.delegate = self
         maskView.isHidden = true
         self.aircraft = DJISDKManager.product() as? DJIAircraft
         if aircraft != nil {
             // setup skyfieController
             skyfieController = SkyfieController(aircraft: aircraft!)
-            //skyfieController?.initWith(aircraft: aircraft!)
             skyfieController?.delegate = self
-            // set delegate
-//            aircraft?.flightController?.delegate = skyfieController
-//            aircraft?.gimbal?.delegate = skyfieController
         }
         
-        // fineTuningView Setup
-        //self.fineTuningView = FineTuningView.init(frame: CGRect(x: self.view.frame.maxX, y: self.btn_FineTuning.frame.origin.y, width: 352, height: 139))
-        //self.fineTuningView.delegate = self
-        //self.fineTuningView.layer.masksToBounds = true
-        //self.view!.addSubview(self.fineTuningView)
         self.fpvView.delegate = self
         
         // Ask authorisation for use in foreground from user
@@ -307,6 +295,11 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         mapView.showsUserLocation = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: .updateUI, object: nil)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     // 更新控制按鈕的狀態
@@ -549,12 +542,13 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
 //    }
     
     @IBAction func onTakeoffLandingButtonClicked(_ sender: UIButton) {
-        if self.btn_TakeoffLanding.currentTitle == "Takeoff" {
+        if btn_TakeoffLanding.currentTitle == "Takeoff" {
             skyfieController?.aircraftTakeoff()
             maskView.isHidden = false
         }
-        else if self.btn_TakeoffLanding.currentTitle == "Landing" {
+        else {
             skyfieController?.aircraftLanding()
+            logString = ""
         }
     }
     
@@ -562,26 +556,28 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         switch btn_GoStop.currentTitle! {
         case "GO":
             // save current heading & pitchAngle, setting up direct pointing
-            directPointingHeading = phoneHeading
-            directPointingPitchAngle = phonePitchAngle
-            skyfieController?.calibrateHeading(userHeading: directPointingHeading, userPhonePitch: directPointingPitchAngle)
+            skyfieController?.calibrateHeading(userHeading: phoneHeading, userPhonePitch: phonePitchAngle)
+            logString += nowTimestamp()
+            logString += "Press Go, "
+            logString += "userheading: \(phoneHeading!), "
+            logString += "userPhonePitch: \(phonePitchAngle * (180 / Double.pi)), "
+            let userLat = String(format: "%.8f", userLocation.latitude)
+            let userLon = String(format: "%.8f", userLocation.longitude)
+            logString += "userLocation: (\(userLat),\(userLon)), "
+            
+            let aircraftLat = String(format: "%.8f", (skyfieController?.aircraftLocation.latitude)!)
+            let aircraftLon = String(format: "%.8f", (skyfieController?.aircraftLocation.longitude)!)
+            logString += "aircraftLcation: (\(aircraftLat),\(aircraftLon)), "
+            logString += "aircraftHeading: \((skyfieController?.aircraftHeading)!)\n "
+            
         case "Stop":
             skyfieController?.interruptDirectPointing()
-        default:
-            return
-        }
-    }
-    
-    @IBAction func onGoStopButtonClicked(_ sender: UIButton) {
-        switch btn_GoStop.currentTitle! {
-        case "GO":
-            // save current heading & pitchAngle, setting up direct pointing
-            setUserCenter(location: userLocation)
-            directPointingHeading = phoneHeading
-            directPointingPitchAngle = phonePitchAngle
-            skyfieController?.setDirectPointingDestinationWith(directPointingHeading: directPointingHeading!, userElevation: directPointingPitchAngle)
-        case "Stop":
-            skyfieController?.stopDirectPointing()
+            logString += nowTimestamp()
+            logString += "Press Stop, "
+            let aircraftLat = String(format: "%.8f", (skyfieController?.aircraftLocation.latitude)!)
+            let aircraftLon = String(format: "%.8f", (skyfieController?.aircraftLocation.longitude)!)
+            logString += "aircraftLcation: (\(aircraftLat),\(aircraftLon)), "
+            logString += "aircraftHeading: \((skyfieController?.aircraftHeading)!)\n "
         default:
             return
         }
@@ -628,7 +624,7 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     
     // MARK: - SkyfieController delegate Methods
     func didAircraftTakeoff() {
-        self.btn_TakeoffLanding.setTitle("Landing", for: UIControlState.normal)
+        self.btn_TakeoffLanding.setTitle("Land", for: UIControlState.normal)
         self.maskView.isHidden = true
     }
     
@@ -641,10 +637,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         btn_TakeoffLanding.setTitle("Takeoff", for: UIControlState.normal)
     }
     
-    func didDirectPointingStartWith(destLocation: CLLocationCoordinate2D, destAltitude: Float) {
-        flag_isFromDPtoFineTuning = true
-        directPointingDestLocation = destLocation
-        directPointingDestAltitude = destAltitude
+    func didDirectPointingStartWith() {
+//        flag_isFromDPtoFineTuning = true
         btn_GoStop.setTitle("Stop", for: UIControlState.normal)
     }
     
@@ -655,6 +649,12 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     func didDirectPointingStop() {
         //showAlertResult("Mission complete")
         btn_GoStop.setTitle("GO", for: UIControlState.normal)
+        logString += nowTimestamp()
+        logString += "Finish DP, "
+        let aircraftLat = String(format: "%.8f", (skyfieController?.aircraftLocation.latitude)!)
+        let aircraftLon = String(format: "%.8f", (skyfieController?.aircraftLocation.longitude)!)
+        logString += "aircraftLcation: (\(aircraftLat),\(aircraftLon)), "
+        logString += "aircraftHeading: \((skyfieController?.aircraftHeading)!)\n "
     }
     
     func didAircraftHeadingCalibrated() {
@@ -693,6 +693,8 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
     func finetuningFor(_ direction: FineTuningDirection) {
         clearCtrlData()
         skyfieController?.newFineTuneMove(direction: direction)
+        logString += nowTimestamp()
+        logString += "Touch down \(direction.rawValue) direction\n"
     }
     
     func fineTuningEnd() {
@@ -883,8 +885,6 @@ class PhoneControlViewController: UIViewController, DJIVideoFeedListener, DJICam
         if segue.identifier == "toLog" {
             let logViewController = segue.destination as! LogViewController
             logViewController.delegate = self
-            logViewController.heading = self.directPointingHeading
-            logViewController.pitchAngle = self.directPointingPitchAngle
             logViewController.userLocation = userLocation
             logViewController.destLocation = self.directPointingDestLocation
             logViewController.destAltitude = self.directPointingDestAltitude

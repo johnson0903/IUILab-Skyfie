@@ -14,11 +14,11 @@ enum FlightMode: String {
     case cartesian = "cartesian"
 }
 
-enum FineTuningDirection {
-    case Left
-    case Right
-    case Up
-    case Down
+enum FineTuningDirection: String {
+    case Left = "Left"
+    case Right = "Right"
+    case Up = "Up"
+    case Down = "Down"
 }
 
 

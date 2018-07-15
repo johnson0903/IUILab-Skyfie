@@ -14,7 +14,7 @@ class SphereSpeedGenerator{
     private var _radius: Float = 4.0
     private var _velocity: Float = 1.0
     private var _sphereCenter: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    private var _accumVerticalAngle: Double = 0.0 //上下移動累積已移動的角度
+    private var _accumVerticalAngle: Double = Double.pi/2 //上下移動累積已移動的角度
     private var horizontalTrack: CylinderSpeedBooster?
     private var prevTime: Date = Date()
     private var velocityAdjust: Date = Date()
